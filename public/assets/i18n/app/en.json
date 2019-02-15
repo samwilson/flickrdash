@@ -1,5 +1,5 @@
 {
-  "app-title": "A Flickr Tool",
+  "app-title": "Flickommons",
   "introduction": "Introduction",
   "home": "Home",
 
@@ -16,10 +16,30 @@
   "recent-commons-uploads": "Your recent Commons uploads",
   "recent-flickr-uploads": "Your recent Flickr uploads",
 
+  "flickr-extracted-id-not-found": "The Flickr photo linked from this Commons file (ID $1) can not be found.",
   "opens-in-new-tab": "Opens in new tab",
   "commons": "Commons",
+  "commons-upload": "Upload this file to Commons?",
+  "commons-title": "Title:",
   "commons-caption": "$1 caption:",
   "commons-page-text": "Page text:",
   "commons-change-comment": "Edit summary:",
+  "flickr": "Flickr",
+  "flickr-title": "Title:",
+  "flickr-description": "Description:",
+  "flickr-date-taken": "Date taken:",
+  "flickr-date-taken-granularity": "Date taken accuracy:",
+  "flickr-granularity-year": "Year",
+  "flickr-granularity-month": "Month",
+  "flickr-granularity-exact": "Exact",
+  "flickr-granularity-circa": "Circa",
+  "flickr-location-latitude": "Latitude:",
+  "flickr-location-longitude": "Longitude:",
+  "flickr-location-accuracy": "Location accuracy:",
+  "flickr-location-accuracy-street": "Street",
+  "flickr-location-accuracy-city": "City",
+  "flickr-location-accuracy-region": "Region",
+  "flickr-location-accuracy-country": "Country",
+  "flickr-location-accuracy-world": "World",
   "save": "Save all"
 }

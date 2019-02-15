@@ -26,6 +26,18 @@
             {% endif %}
         </p>
     </header>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert {{ label }}">{{ message }}</div>
+        {% endfor %}
+    {% endfor %}
+    {% if alerts is defined %}
+        {% for alert in alerts %}
+        <div class="alert {{ alert.type }}">{{ alert.message }}</div>
+        {% endfor %}
+    {% endif %}
+
     <main>{% block main %}{% endblock %}</main>
     <script type="application/javascript" src="{{ asset('assets/app.js') }}"></script>
 </body>

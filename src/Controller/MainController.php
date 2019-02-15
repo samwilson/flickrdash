@@ -14,6 +14,7 @@ use OOUI\FieldsetLayout;
 use OOUI\HorizontalLayout;
 use OOUI\MultilineTextInputWidget;
 use OOUI\TextInputWidget;
+use Samwilson\PhpFlickr\FlickrException;
 use Samwilson\PhpFlickr\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,22 +67,34 @@ class MainController extends AbstractController
      */
     public function edit(Commons $commons, Session $session, Flickr $flickr, $commonsTitle = '', $flickrId = '')
     {
+        $alerts = [];
         if (!empty($commonsTitle) && empty($flickrId)) {
             $extractedFlickrId = $commons->getFlickrId($commonsTitle);
             if ($extractedFlickrId) {
-                return $this->redirectToRoute(
-                    'editBoth',
-                    ['commonsTitle' => $commonsTitle, 'flickrId' => $extractedFlickrId]
-                );
+                try {
+                    $flickr->getInfo($extractedFlickrId);
+                    return $this->redirectToRoute(
+                        'editBoth',
+                        ['commonsTitle' => $commonsTitle, 'flickrId' => $extractedFlickrId]
+                    );
+                } catch (FlickrException $exception) {
+                    $alerts[] = [
+                        'type'=> 'warning',
+                        'message' => $this->msg('flickr-extracted-id-not-found', [$extractedFlickrId])
+                    ];
+                }
             }
         }
 
         $flickrFile = false;
         if ($flickrId) {
-            $flickrFile = $flickr->getInfo($flickrId);
+            $flickrFile = $flickr->getInfo((int)$flickrId);
         }
 
-        $commonsFile = $commons->getInfo($commonsTitle);
+        $commonsFile = false;
+        if ($commonsTitle) {
+            $commonsFile = $commons->getInfo($commonsTitle);
+        }
 
         // Commons fields.
         $commonsFieldset = new FieldsetLayout();
@@ -175,6 +188,7 @@ class MainController extends AbstractController
             ],
             'value' => $flickrFile['dates']['takengranularity'] ?? '',
             'name' => 'flickr[datetakengranularity]',
+            'infusable' => true,
         ]);
         $flickrDateTakenGranularityField = new FieldLayout(
             $flickrDateTakenGranularityWidget,
@@ -242,6 +256,7 @@ class MainController extends AbstractController
             'type' => 'submit',
         ]);
         return $this->render('edit.html.twig', [
+            'alerts' => $alerts,
             'flickr_logged_in' => $session->has(FlickrAuthController::SESSION_KEY),
             'commons_file' => $commonsFile,
             'flickr_file' => $flickrFile,
@@ -256,29 +271,40 @@ class MainController extends AbstractController
      * @Route("edit/{flickrId}", name="saveFlickr", requirements={"flickrId"="\d+"}, methods={"POST"})
      * @Route("edit/{flickrId}/{commonsTitle}", name="saveBoth", requirements={"commonsTitle"="File:.*", "flickrId"="\d+"}, methods={"POST"})
      */
-    public function save(Request $request, Commons $commons, Flickr $flickr, $commonsTitle = '', $flickrId = '')
-    {
+    public function save(
+        Request $request,
+        Commons $commons,
+        Flickr $flickr,
+        Session $session,
+        $commonsTitle = '',
+        $flickrId = ''
+    ) {
         $requestParams = $request->request->all();
 
-        if (isset($requestParams['commons']['upload']) && $flickrId) {
+        $commonsLoggedIn = $session->has('logged_in_user');
+
+        if ($commonsLoggedIn && isset($requestParams['commons']['upload']) && $flickrId) {
             // Save new Commons photo.
             $uploaded = $commons->upload(
-                $flickrId,
+                (int)$flickrId,
                 $flickr,
                 $requestParams['commons']['title'],
                 $requestParams['commons']['page_text']
             );
             $commonsTitle = 'File:'.$uploaded['filename'];
-        } elseif (!empty($requestParams['commons']['comment'])) {
+            $this->addFlash('notice', $this->msg('commons-photo-uploaded'));
+        } elseif ($commonsLoggedIn && !empty($requestParams['commons']['comment'])) {
             // Save existing Commons photo.
             $commons->savePage(
                 $commonsTitle,
                 $requestParams['commons']['page_text'],
                 $requestParams['commons']['comment']
             );
+            $this->addFlash('notice', $this->msg('commons-data-saved'));
         }
         if (!empty($flickrId) && isset($requestParams['flickr']['title'])) {
-            $flickr->save($flickrId, $requestParams['flickr']);
+            $flickr->save((int)$flickrId, $requestParams['flickr']);
+            $this->addFlash('notice', $this->msg('flickr-data-saved'));
         }
 
         // If we have both, redirect to both.

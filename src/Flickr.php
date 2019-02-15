@@ -5,6 +5,7 @@ namespace App;
 
 use App\Controller\FlickrAuthController;
 use DateTime;
+use Samwilson\PhpFlickr\FlickrException;
 use Samwilson\PhpFlickr\PhotosApi;
 use Samwilson\PhpFlickr\PhpFlickr;
 use Samwilson\PhpFlickr\Util;

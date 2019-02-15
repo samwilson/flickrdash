@@ -82,7 +82,7 @@ class Commons
             'titles' => str_replace(' ', '_', $title),
             'format' => 'json',
             'iiprop' => 'url',
-            'iiurlwidth' => '1000',
+            'iiurlwidth' => '700',
         ]);
         $imageInfoResult = \GuzzleHttp\json_decode($result1, true);
         if (!isset($imageInfoResult['query']['pages'])) {
@@ -200,7 +200,7 @@ class Commons
         $info = $this->getInfo($title);
         preg_match('|https://www.flickr.com/photos/[^/]+/([0-9]+)|m', $info['html'], $matches);
         if (isset($matches[1])) {
-            return $matches[1];
+            return (int)$matches[1];
         }
         // @TODO support https://flic.kr/p/2dTyzrk URLs.
     }

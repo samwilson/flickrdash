@@ -43,7 +43,22 @@ header {
   }
 }
 
-main {
+.alert {
+  margin: 1em auto;
+  max-width: 50em;
+  padding: 0.7em;
+}
+.alert.notice {
+  border: 1px solid @wmui-color-green30;
+  background-color: @wmui-color-green90;
+}
+.alert.warning {
+  border: 1px solid @wmui-color-yellow30;
+  background-color: @wmui-color-yellow90;
+}
+.alert.error {
+  border: 1px solid @wmui-color-red30;
+  background-color: @wmui-color-red90;
 }
 
 .recent-photos {
@@ -87,7 +102,6 @@ main {
 }
 section.form h2 {
   margin: 0 0 0.4em 0;
-  text-align: center;
 }
 
 section.photo-and-map {

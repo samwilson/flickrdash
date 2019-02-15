@@ -58,7 +58,9 @@
 			'./node_modules/oojs-ui/dist/oojs-ui.js',
 			'./node_modules/oojs-ui/dist/oojs-ui-wikimediaui.js',
 			'./node_modules/oojs-ui/dist/oojs-ui-core-wikimediaui.css',
+			'./node_modules/oojs-ui/dist/oojs-ui-widgets-wikimediaui.css',
 			'./node_modules/oojs-ui/dist/oojs-ui-wikimediaui-icons-interactions.css',
+			'./node_modules/oojs-ui/dist/oojs-ui-wikimediaui-icons-movement.css',
 			'./node_modules/oojs-ui/dist/oojs-ui-wikimediaui-icons-wikimedia.css',
 
 			// jQuery i18n.
