@@ -1,0 +1,25 @@
+{
+  "app-title": "A Flickr Tool",
+  "introduction": "Introduction",
+  "home": "Home",
+
+  "help": "Help",
+  "login": "Connect to Commons",
+  "logout": "Disconnect from Commons",
+  "flickr-login": "Connect to Flickr",
+  "flickr-logout": "Disconnect from Flickr",
+  "logged-in-as": "Connected to Commons as $1",
+
+  "flickr-dupes": "Flickr de-duplication",
+  "find-duplicates": "Find duplicates",
+
+  "recent-commons-uploads": "Your recent Commons uploads",
+  "recent-flickr-uploads": "Your recent Flickr uploads",
+
+  "opens-in-new-tab": "Opens in new tab",
+  "commons": "Commons",
+  "commons-caption": "$1 caption:",
+  "commons-page-text": "Page text:",
+  "commons-change-comment": "Edit summary:",
+  "save": "Save all"
+}

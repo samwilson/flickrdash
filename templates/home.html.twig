@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+
+    <div class="two-cols recent-photos">
+    <section class="col">
+        <h2>{{ msg('recent-commons-uploads') }}</h2>
+        {% spaceless %}
+        <div class="thumbnails">
+        {% for image in recent_commons_files %}
+            <a href="{{ path( 'editCommons', { commonsTitle: image.fulltitle } ) }}">
+                <img src="{{ image.imageinfo.0.thumburl }}" />
+                {{ image.title }}
+            </a>
+        {% endfor %}
+        </div>
+        {% endspaceless %}
+    </section>
+    <section class="thumbnails col">
+        <h2>{{ msg('recent-flickr-uploads') }}</h2>
+        <div class="thumbnails">
+            {% for image in recent_flickr_files %}
+                <a href="{{ path( 'editFlickr', { flickrId: image.id } ) }}">
+                    <img src="{{ image.url_t }}" />
+                    {{ image.title }}
+                </a>
+            {% endfor %}
+        </div>
+    </section>
+    </div>
+
+{% endblock %}

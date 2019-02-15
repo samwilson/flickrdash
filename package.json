@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "@symfony/webpack-encore": "0.23.0",
+    "@wikimedia/jquery.i18n": "1.0",
+    "copy-webpack-plugin": "4.6",
+    "css-loader": "2.1",
+    "jquery": "3.3",
+    "jquery.uls": "0.1",
+    "leaflet": "1.4.0",
+    "less": "3.9",
+    "less-loader": "4.1",
+    "oojs-ui": "0.30.2",
+    "popper.js": "1.14",
+    "wikimedia-ui-base": "0.13"
+  },
+  "devDependencies": {
+    "eslint": "5.13.0"
+  }
+}

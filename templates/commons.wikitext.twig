@@ -1,0 +1,21 @@
+== {{'{{'}}int:filedesc{{'}}'}} ==
+{{'{{'}}Information
+|description    = {{ flickr_file.description }}
+|date           = {% if flickr_file.dates.takenunknown %}{{'{{'}}date-unknown{{'}}'}}{% else %}{{ flickr_file.dates.taken }}{% endif %}
+
+|source         = {{ flickr_file.urls.url.0._content }}
+|author         = [https://www.flickr.com/photos/{{ flickr_file.owner.nsid }} {{ flickr_file.owner.realname }}]
+|permission     =
+|other versions =
+{{'}}'}}
+
+{% if flickr_file.location is defined %}
+{{'{{'}}location|{{ flickr_file.location.latitude }}|{{ flickr_file.location.longitude }}{{'}}'}}
+{% endif %}
+
+== {{'{{'}}int:license-header{{'}}'}} ==
+{{'{{'}}@TODO license-tag{{'}}'}}
+
+{#{% for cat in categories %}#}
+{#[[Category:{{ cat }}]]#}
+{#{% endfor %}#}

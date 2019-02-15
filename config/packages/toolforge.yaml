@@ -1,0 +1,7 @@
+toolforge:
+  intuition:
+    domain: 'flickr-tool'
+  oauth:
+    url: '%env(OAUTH_URL)%'
+    consumer_key: '%env(OAUTH_KEY)%'
+    consumer_secret: '%env(OAUTH_SECRET)%'

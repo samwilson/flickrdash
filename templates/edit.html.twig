@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+
+    <section class="photo-and-map">
+        <div class="photo">
+            {% if commons_file %}
+                <img src="{{ commons_file.img_src }}" />
+            {% elseif flickr_file %}
+                {#{{ dump(flickr_file) }}#}
+                <img src="{{ flickr_file.img_src }}" />
+            {% endif %}
+        </div>
+        <div class="map" id="map">
+        </div>
+    </section>
+
+    <form action="" method="post" class="edit-form">
+
+        <div class="two-cols">
+            <section class="commons col form">
+                <h2>
+                    <em>{{ msg('commons') }}</em>
+                    {% if commons_file %}
+                    &middot; <a href="{{ commons_file.url }}" target="_blank" title="{{ msg('opens-in-new-tab') }}">{{ commons_file.title }}</a>
+                    {% endif %}
+                </h2>
+                {{ commons_fieldset|raw }}
+            </section>
+            <section class="flickr col form">
+                {% if flickr_file %}
+                    <h2>
+                        <em>{{ msg('flickr') }}</em>
+                        &middot; <a href="{{ flickr_file.shorturl }}" target="_blank" title="{{ msg('opens-in-new-tab') }}">{{ flickr_file.shorturl }}</a>
+                    </h2>
+                    {{ flickr_fieldset|raw }}
+                {% endif %}
+            </section>
+        </div>
+        <p class="center">
+            {% if flickr_file or commons_file %}
+            {{ save_button|raw }}
+            {% endif %}
+        </p>
+    </form>
+
+{% endblock %}

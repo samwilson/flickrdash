@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset name="A Flickr Tool">
+    <rule ref="./vendor/wikimedia/toolforge-bundle/Resources/phpcs/ruleset.xml" />
+    <file>.</file>
+    <exclude-pattern>*.js</exclude-pattern><!-- Javascript linting is handled by ESLint; see .eslintrc.js -->
+    <exclude-pattern>.phpunit/</exclude-pattern>
+    <exclude-pattern>vendor/</exclude-pattern>
+    <exclude-pattern>node_modules/</exclude-pattern>
+    <exclude-pattern>var/</exclude-pattern>
+    <exclude-pattern>public/assets</exclude-pattern>
+    <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
+        <properties>
+            <property name="rootNamespaces" type="array">
+                <element key="src" value="App" />
+                <element key="tests" value="App\Tests" />
+            </property>
+        </properties>
+    </rule>
+</ruleset>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="{{ lang() }}" dir="{% if is_rtl() %}rtl{% else %}ltr{% endif %}">
+<head>
+    <meta charset="utf-8">
+    <title>
+        {% if title is defined %}{{ title }} | {% endif %}
+        {{ msg('app-title') }}
+    </title>
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/app.css') }}" />
+</head>
+<body>
+    <header>
+        <h1><a href="{{ path('home') }}">{{ msg('app-title') }}</a></h1>
+        <p>
+            {% if logged_in_user() %}
+                <span class="logged-in-as">{{ msg( 'logged-in-as', [ logged_in_user().username ] ) }}</span>
+                <a href="{{ path('toolforge_logout') }}">{{ msg('logout') }}</a>
+            {% else %}
+                <a href="{{ path('toolforge_login') }}">{{ msg('login') }}</a>
+            {% endif %}
+
+            {% if flickr_logged_in %}
+                <a href="{{ path('flickr_logout') }}">{{ msg('flickr-logout') }}</a>
+            {% else %}
+                <a href="{{ path('flickr_login') }}">{{ msg('flickr-login') }}</a>
+            {% endif %}
+        </p>
+    </header>
+    <main>{% block main %}{% endblock %}</main>
+    <script type="application/javascript" src="{{ asset('assets/app.js') }}"></script>
+</body>
+</html>

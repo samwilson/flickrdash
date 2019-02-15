@@ -1,0 +1,114 @@
+@import '../node_modules/wikimedia-ui-base/wikimedia-ui-base.less';
+@import '../vendor/wikimedia/toolforge-bundle/Resources/assets/wikimedia-base.less';
+
+:root {
+  // Workaround for https://github.com/webpack-contrib/css-loader/issues/708
+  border: 0;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background-color: #212124;
+  font-size: 0.9rem;
+}
+h1, h2, h3 {
+}
+a {
+
+}
+
+header {
+  text-align: center;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  background-color: #151517;
+  color: @color-base--inverted;
+  h1 {
+    margin: 0;
+  }
+  a {
+    color: @color-base--inverted;
+    padding: 0 1em;
+    flex: 1;
+  }
+  a:hover {
+    opacity: 0.7;
+    color: @color-base--inverted;
+  }
+}
+
+main {
+}
+
+.recent-photos {
+  background-color: #f3f5f6;
+  a {
+    color: @color-base;
+  }
+  a:hover {
+    opacity: 0.7;
+    text-decoration: none;
+  }
+}
+
+.center {
+  text-align: center;
+}
+
+.two-cols {
+  display: flex;
+  .col {
+    padding: 1em;
+    flex: 1;
+    width: 50%;
+  }
+}
+
+.thumbnails {
+  & > a {
+    display: inline-block;
+    width: 150px;
+    height: 220px;
+    text-align: center;
+    font-size: smaller;
+    margin: 0.4em;
+  }
+}
+
+.edit-form {
+  background-color: @background-color-base;
+  padding-bottom: 1em;
+}
+section.form h2 {
+  margin: 0 0 0.4em 0;
+  text-align: center;
+}
+
+section.photo-and-map {
+  display: flex;
+  align-items: center;
+  .map,
+  .photo {
+    flex: 1;
+    margin: 1em;
+    width: 600px;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .photo {
+  }
+  .map {
+  }
+}
+
+#commons-page-text-widget textarea {
+  font-family: @font-family-monospace;
+}

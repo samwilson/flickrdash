@@ -1,0 +1,76 @@
+{
+    "name": "samwilson/flickr-commons",
+    "description": "A tool for copying photos from Flickr to Wikimedia Commons.",
+    "type": "project",
+    "license": "GPL-3.0-or-later",
+    "require": {
+        "php": "^7.2",
+        "ext-ctype": "*",
+        "ext-dom": "*",
+        "ext-iconv": "*",
+        "ext-json": "*",
+        "ext-libxml": "*",
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^6.3",
+        "oojs/oojs-ui": "^0.30",
+        "samwilson/phpflickr": "^4.8",
+        "sensio/framework-extra-bundle": "^5.1",
+        "symfony/asset": "^4.1",
+        "symfony/console": "^4.1",
+        "symfony/expression-language": "^4.1",
+        "symfony/flex": "^1.1",
+        "symfony/form": "^4.1",
+        "symfony/framework-bundle": "^4.1",
+        "symfony/monolog-bundle": "^3.1",
+        "symfony/process": "^4.1",
+        "symfony/security-bundle": "^4.1",
+        "symfony/serializer-pack": "^1.0",
+        "symfony/swiftmailer-bundle": "^3.1",
+        "symfony/twig-bundle": "^4.1",
+        "symfony/validator": "^4.1",
+        "symfony/web-link": "^4.1",
+        "symfony/yaml": "^4.1",
+        "wikimedia/toolforge-bundle": "^0.11"
+    },
+    "require-dev": {
+        "mediawiki/minus-x": "^0.3",
+        "php-coveralls/php-coveralls": "^2.1",
+        "slevomat/coding-standard": "^4.8",
+        "symfony/debug-pack": "^1.0",
+        "symfony/dotenv": "^4.1",
+        "symfony/maker-bundle": "^1.0",
+        "symfony/profiler-pack": "^1.0",
+        "symfony/test-pack": "^1.0",
+        "symfony/web-server-bundle": "^4.1"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "composer validate",
+            "./bin/console lint:twig ./templates",
+            "./bin/console lint:yaml ./config",
+            "./bin/console lint:yaml .travis.yml",
+            "./vendor/bin/phpcs -s .",
+            "./vendor/bin/minus-x check .",
+            "./node_modules/.bin/lessc --lint assets/*.less",
+            "./node_modules/.bin/eslint .",
+            "./bin/phpunit tests"
+        ],
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        }
+    }
+}
