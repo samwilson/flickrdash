@@ -21,6 +21,7 @@
 
             {% if flickr_logged_in %}
                 <a href="{{ path('flickr_logout') }}">{{ msg('flickr-logout') }}</a>
+                {#<a href="{{ path('flickr_dupes') }}">{{ msg('flickr-dupes-compare') }}</a>#}
             {% else %}
                 <a href="{{ path('flickr_login') }}">{{ msg('flickr-login') }}</a>
             {% endif %}

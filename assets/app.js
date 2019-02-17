@@ -127,4 +127,22 @@ $(function () {
         } );
     }
 
+    var $originalTag = $( ':input[name="flickr[tags]"]' ).parents( '.oo-ui-widget' );
+    if ($originalTag.length === 1) {
+        var originalTagWidget = OO.ui.infuse($originalTag);
+        console.log(originalTagWidget.data);
+
+        items = $.map( originalTagWidget.data, function ( tag ) {
+            return new OO.ui.MenuOptionWidget( { data: tag.raw } );
+        } );
+        console.log(items);
+        var replacement = new OO.ui.MenuTagMultiselectWidget({
+            allowArbitrary: true,
+            menu: { items: items }
+        });
+//        replacement.addItems(originalTagWidget.data)
+        console.log(replacement);
+        $originalTag.after(replacement.$element);
+    }
+
 });

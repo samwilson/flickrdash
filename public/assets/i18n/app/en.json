@@ -41,5 +41,21 @@
   "flickr-location-accuracy-region": "Region",
   "flickr-location-accuracy-country": "Country",
   "flickr-location-accuracy-world": "World",
-  "save": "Save all"
+  "flickr-tags": "Tags:",
+  "save": "Save all",
+  "flickr-data-saved": "Flickr data saved!",
+  "commons-data-saved": "Commons page saved!",
+  "commons-photo-uploaded": "Photo successfully uploaded to Commons!",
+
+  "flickr-id": "ID:",
+  "flickr-original-size": "Original size:",
+  "flickr-no-visibility": "Private",
+  "flickr-isfriend": "Friends ✓",
+  "flickr-isfamily": "Family ✓",
+  "flickr-ispublic": "Public",
+  "flickr-date-uploaded": "Date uploaded:",
+  "flickr-comment-count": "Comments:",
+  "flickr-views": "Views:",
+  "flickr-visibility": "Visibility:",
+  "flickr-sets": "Albums:"
 }

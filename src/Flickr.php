@@ -33,12 +33,20 @@ class Flickr
      * @param int $id
      * @return mixed[]
      */
-    public function getInfo(int $id): array
+    public function getInfo(int $id, $extended = false): array
     {
         $photoInfo = $this->flickr->photos()->getInfo($id);
         $photoInfo['shorturl'] = 'https://flic.kr/p/'.Util::base58encode($id);
         $photoInfo['img_src'] = $this->flickr->buildPhotoURL($photoInfo, PhotosApi::SIZE_MEDIUM_800);
         $photoInfo['original_url'] = $this->flickr->buildPhotoURL($photoInfo, PhotosApi::SIZE_ORIGINAL);
+        if ($extended) {
+            $photoInfo['dateuploaded_formatted'] = date('Y-m-d H:i:s', (int)$photoInfo['dateuploaded']);
+            $sizes = $this->flickr->photos()->getSizes($id);
+            foreach ($sizes['size'] as $size) {
+                $photoInfo['sizes'][$size['label']] = $size;
+            }
+            $photoInfo['contexts'] = $this->flickr->photos_getAllContexts($id);
+        }
         return $photoInfo;
     }
 

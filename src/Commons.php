@@ -59,6 +59,9 @@ class Commons
         ]);
         $resultData = \GuzzleHttp\json_decode($result, true);
         $out = [];
+        if (isset($resultData['error']['info'])) {
+            throw new Exception($resultData['error']['info']);
+        }
         foreach ($resultData['query']['pages'] as $page) {
             $page['fulltitle'] = $page['title'];
             $page['title'] = substr($page['fulltitle'], 5);
@@ -195,7 +198,7 @@ class Commons
         return $uploadResponseData['upload'];
     }
 
-    public function getFlickrId(string $title): int
+    public function getFlickrId(string $title)
     {
         $info = $this->getInfo($title);
         preg_match('|https://www.flickr.com/photos/[^/]+/([0-9]+)|m', $info['html'], $matches);

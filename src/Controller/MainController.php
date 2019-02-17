@@ -8,6 +8,7 @@ use App\Flickr;
 use Krinkle\Intuition\Intuition;
 use OOUI\ButtonInputWidget;
 use OOUI\CheckboxInputWidget;
+use OOUI\ComboBoxInputWidget;
 use OOUI\DropdownInputWidget;
 use OOUI\FieldLayout;
 use OOUI\FieldsetLayout;
@@ -239,6 +240,21 @@ class MainController extends AbstractController
             $flickrLocationAccuracyWidget,
             ['label' => $this->msg('flickr-location-accuracy'), 'align' => 'top']
         );
+//        $tags = [];
+//        if (isset($flickrFile['tags']['tag'])) {
+//            foreach ($flickrFile['tags']['tag'] as $tag) {
+//                $tags[] = $tag['raw'];
+//            }
+//        }
+        $flickrTagsWidget = new TextInputWidget([
+            'name' => 'flickr[tags]',
+            'infusable' => true,
+        ]);
+        $flickrTagsWidget->setData($flickrFile['tags']['tag']);
+        $flickrTagsField = new FieldLayout(
+            $flickrTagsWidget,
+            ['label' => $this->msg('flickr-tags'), 'align' => 'top']
+        );
         $flickrFieldset = new FieldsetLayout(['items' => [
             $flickrTitleField,
             $flickrDescriptionField,
@@ -248,6 +264,7 @@ class MainController extends AbstractController
                 $flickrLocationLongitudeField,
                 $flickrLocationAccuracyField,
             ]]),
+            $flickrTagsField,
         ]]);
 
         // Other fields.

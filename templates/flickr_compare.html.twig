@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+
+<form class="two-cols" method="post" action="{{ path('flickr_dupe_delete') }}">
+    {% for photo in photos %}
+        <section class="col">
+            <p><img src="{{ photo.sizes.Medium.source }}" width="{{ photo.sizes.Medium.width }}" height="{{ photo.sizes.Medium.height }}" /></p>
+            <table class="vertical-headers">
+                <tr>
+                    <th>{{ msg('flickr-id') }}</th>
+                    <td><a href="{{ photo.urls.url.0._content }}" target="_blank" title="{{ msg('opens-in-new-tab') }}">{{ photo.id }}</a></td>
+                </tr>
+                <tr><th>{{ msg('flickr-title') }}</th><td>{{ photo.title }}</td></tr>
+                <tr><th>{{ msg('flickr-description') }}</th><td>{{ photo.description }}</td></tr>
+                <tr><th>{{ msg('flickr-original-size') }}</th><td>{{ photo.sizes.Original.height }} &times; {{ photo.sizes.Original.width }}</td></tr>
+                <tr><th>{{ msg('flickr-date-taken') }}</th><td>{{ photo.dates.taken }} ({{ photo.dates.takengranularity }})</td></tr>
+                <tr><th>{{ msg('flickr-views') }}</th><td>{{ photo.views }}</td></tr>
+                <tr><th>{{ msg('flickr-comment-count') }}</th><td>{{ photo.comments }}</td></tr>
+                <tr>
+                    <th>{{ msg('flickr-visibility') }}</th>
+                    <td>
+                        {% if photo.visibility.ispublic %}{{ msg('flickr-ispublic') }}{% endif %}
+                        {% if photo.visibility.isfriend %}{{ msg('flickr-isfriend') }}{% endif %}
+                        {% if photo.visibility.isfamily %}{{ msg('flickr-isfamily') }}{% endif %}
+                        {% if not ( photo.visibility.isfamily or photo.visibility.isfriend or photo.visibility.ispublic ) %}
+                            <em>{{ msg('flickr-no-visibility') }}</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ msg('flickr-tags') }}</th>
+                    <td>
+                        {% for tag in photo.tags.tag %}
+                            <a class="tag" href="https://www.flickr.com/photos/tags/{{ tag._content }}" target="_blank">{{ tag.raw }}</a>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ msg('flickr-sets') }}</th>
+                    <td>
+                        {% if photo.contexts.set is defined %}
+                            <ul>
+                            {% for set in photo.contexts.set %}
+                                <li><a href="">{{ set.title }}</a></li>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            <em>{{ msg('flickr-no-sets') }}</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr><th>{{ msg('flickr-date-uploaded') }}</th><td>{{ photo.dateuploaded_formatted }}</td></tr>
+            </table>
+            {#{{ dump(photo) }}#}
+        </section>
+    {% endfor %}
+</form>
+
+{% endblock %}
