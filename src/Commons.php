@@ -29,7 +29,11 @@ class Commons
 
     public function __construct(string $oauthUrl, Client $oauthClient, Session $session)
     {
-        $this->apiUrl = preg_replace('|index\.php.*|', 'api.php', $oauthUrl);
+        if (preg_match('|meta.wikimedia.org|', $oauthUrl)) {
+            $this->apiUrl = 'https://commons.wikimedia.org/w/api.php';
+        } else {
+            $this->apiUrl = preg_replace('|index\.php.*|', 'api.php', $oauthUrl);
+        }
         $this->accessToken = $session->get('oauth.access_token');
         $this->oauthClient = $oauthClient;
         $loggedInUser = $session->get('logged_in_user');
@@ -44,7 +48,7 @@ class Commons
         if (!$this->currentUser) {
             return [];
         }
-        $result = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, [
+        $params = [
             'action' => 'query',
             'prop' => 'imageinfo',
             'iiprop' => 'url|timestamp',
@@ -54,18 +58,21 @@ class Commons
             'gaisort' => 'timestamp',
             'gaidir' => 'descending',
             'gailimit' => '10',
-            'gaimime' => 'image/png|image/jpeg|image/gif|image/tiff',
+            //'gaimime' => 'image/png|image/jpeg|image/gif|image/tiff',
             'format' => 'json',
-        ]);
+        ];
+        $result = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, $params);
         $resultData = \GuzzleHttp\json_decode($result, true);
         $out = [];
         if (isset($resultData['error']['info'])) {
             throw new Exception($resultData['error']['info']);
         }
-        foreach ($resultData['query']['pages'] as $page) {
-            $page['fulltitle'] = $page['title'];
-            $page['title'] = substr($page['fulltitle'], 5);
-            $out[] = $page;
+        if (isset($resultData['query']['pages'])) {
+            foreach ($resultData['query']['pages'] as $page) {
+                $page['fulltitle'] = $page['title'];
+                $page['title'] = substr($page['fulltitle'], 5);
+                $out[] = $page;
+            }
         }
         return $out;
     }
@@ -89,7 +96,7 @@ class Commons
         ]);
         $imageInfoResult = \GuzzleHttp\json_decode($result1, true);
         if (!isset($imageInfoResult['query']['pages'])) {
-            return false;
+            return [];
         }
         $imageInfo = array_shift($imageInfoResult['query']['pages']);
 
@@ -201,6 +208,9 @@ class Commons
     public function getFlickrId(string $title)
     {
         $info = $this->getInfo($title);
+        if (!isset($info['html'])) {
+            return;
+        }
         preg_match('|https://www.flickr.com/photos/[^/]+/([0-9]+)|m', $info['html'], $matches);
         if (isset($matches[1])) {
             return (int)$matches[1];

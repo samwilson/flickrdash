@@ -11,7 +11,8 @@
   "logged-in-as": "Connected to Commons as $1",
 
   "flickr-dupes": "Flickr de-duplication",
-  "find-duplicates": "Find duplicates",
+  "flickr-find-duplicates": "Find duplicates",
+  "flickr-duplicates-search": "Search for duplicate photos",
 
   "recent-commons-uploads": "Your recent Commons uploads",
   "recent-flickr-uploads": "Your recent Flickr uploads",

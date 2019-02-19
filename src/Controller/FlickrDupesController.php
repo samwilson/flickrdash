@@ -77,7 +77,7 @@ class FlickrDupesController extends AbstractController
             null,
             null,
             'tags',
-            100,
+            10,
             $pageNum
         );
         if (0 === $photos['pages']) {
@@ -96,6 +96,7 @@ class FlickrDupesController extends AbstractController
         }
         return new JsonResponse([
             'pages' => (int)$photos['pages'],
+            'page' => $pageNum,
             //'total' => (int)$photos['total'],
         ]);
     }
@@ -103,7 +104,7 @@ class FlickrDupesController extends AbstractController
     /**
      * @param PhpFlickr $flickr
      * @param string[][] $photo
-     * @return array Two photo-info arrays (keyed 0 and 1).
+     * @return array
      */
     protected function processPhoto(PhpFlickr $flickr, array $photo): array
     {
@@ -117,13 +118,14 @@ class FlickrDupesController extends AbstractController
             // If we've got a checksum tag, query for others wit hthe same one.
             $tagParts = explode('=', $tag);
             $tagSearchString = $tagParts[0].'="'.$tagParts[1].'"';
-            $search = $flickr->photos()->search(['machine_tags' => $tag]);
-            dd($photo, $tag, $tagParts, $tagSearchString, $search);
+            $search = $flickr->photos()->search(['user_id' => 'me', 'machine_tags' => $tag]);
+            //dd($photo, $tag, $tagParts, $tagSearchString, $search);
             // https://www.flickr.com/photos/tags/checksum:sha1=31ae163e2fb5cd0798d4edc8f9259132f956eb25 works
             // https://www.flickr.com/photos/tags/checksum:sha1=31ae163e2fb5cd0798d4edc8f9259132f956eb25
             if ((int)$search['total'] < 2) {
                 continue;
             }
+            dd($search);
             $prev = null;
             foreach ($search['photo'] as $searchResult) {
                 $photoInfo = $flickr->photos()->getInfo($searchResult['id']);

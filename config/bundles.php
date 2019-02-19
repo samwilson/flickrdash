@@ -12,5 +12,5 @@ return [
     Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true, 'test' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Symfony\Bundle\WebServerBundle\WebServerBundle::class => ['dev' => true],
-    Wikimedia\ToolforgeBundle\ToolforgeBundle::class => ['dev' => true],
+    Wikimedia\ToolforgeBundle\ToolforgeBundle::class => ['all' => true],
 ];

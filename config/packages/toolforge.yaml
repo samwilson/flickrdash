@@ -1,6 +1,6 @@
 toolforge:
   intuition:
-    domain: 'flickr-tool'
+    domain: 'flickommons'
   oauth:
     url: '%env(OAUTH_URL)%'
     consumer_key: '%env(OAUTH_KEY)%'

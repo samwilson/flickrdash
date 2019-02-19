@@ -20,6 +20,7 @@ use Samwilson\PhpFlickr\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
@@ -95,6 +96,10 @@ class MainController extends AbstractController
         $commonsFile = false;
         if ($commonsTitle) {
             $commonsFile = $commons->getInfo($commonsTitle);
+            if (!$commonsFile) {
+                $this->addFlash('notice', 'Unable to retrieve details of '.$commonsTitle);
+                return $this->redirectToRoute('home');
+            }
         }
 
         // Commons fields.
