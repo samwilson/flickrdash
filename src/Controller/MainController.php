@@ -6,18 +6,23 @@ namespace App\Controller;
 use App\Commons;
 use App\Flickr;
 use Krinkle\Intuition\Intuition;
+use Mediawiki\Api\FluentRequest;
+use Mediawiki\Api\MediawikiApi;
 use OOUI\ButtonInputWidget;
 use OOUI\CheckboxInputWidget;
+use OOUI\CheckboxMultiselectInputWidget;
 use OOUI\ComboBoxInputWidget;
 use OOUI\DropdownInputWidget;
 use OOUI\FieldLayout;
 use OOUI\FieldsetLayout;
 use OOUI\HorizontalLayout;
 use OOUI\MultilineTextInputWidget;
+use OOUI\RadioInputWidget;
 use OOUI\TextInputWidget;
 use Samwilson\PhpFlickr\FlickrException;
 use Samwilson\PhpFlickr\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -87,6 +92,15 @@ class MainController extends AbstractController
                 }
             }
         }
+        if (empty($commonsTitle) && !empty($flickrId)) {
+            $commonsTitle = $flickr->getCommonsTitle((int)$flickrId);
+            if ($commonsTitle) {
+                return $this->redirectToRoute(
+                    'editBoth',
+                    ['commonsTitle' => $commonsTitle, 'flickrId' => $flickrId]
+                );
+            }
+        }
 
         $flickrFile = false;
         if ($flickrId) {
@@ -103,15 +117,20 @@ class MainController extends AbstractController
         }
 
         // Commons fields.
+        $commonsLoggedIn = $session->has('logged_in_user');
         $commonsFieldset = new FieldsetLayout();
         if (!$commonsFile) {
             $commonsUploadWidget = new CheckboxInputWidget([
                 'id' => 'commons-upload-widget',
                 'name' => 'commons[upload]',
                 'infusable' => true,
+                // Disable if the user is not logged in.
+                'disabled' => !$commonsLoggedIn,
             ]);
             $commonsUploadField = new FieldLayout($commonsUploadWidget, [
                 'label' => $this->msg('commons-upload'),
+                'help' => $commonsLoggedIn ? '' : $this->msg('commons-upload-please-log-in'),
+                'helpInline' => true,
             ]);
             $commonsTitleWidget = new TextInputWidget([
                 'id' => 'commons-title-widget',
@@ -129,6 +148,7 @@ class MainController extends AbstractController
             'id' => 'commons-caption-widget',
             'name' => 'commons[caption]',
             'infusable' => true,
+            'value' => $commonsFile['caption'],
         ]);
         $commonsCaptionField = new FieldLayout(
             $commonsCaptionWidget,
@@ -138,7 +158,7 @@ class MainController extends AbstractController
             'id' => 'commons-page-text-widget',
             'value' => $commonsFile['wikitext'] ?? $this->renderView('commons.wikitext.twig', ['flickr_file' => $flickrFile]),
             'name' => 'commons[page_text]',
-            'rows' => 12,
+            'rows' => 18,
             'infusable' => true,
         ]);
         $commonsPageTextField = new FieldLayout(
@@ -200,6 +220,19 @@ class MainController extends AbstractController
             $flickrDateTakenGranularityWidget,
             ['label' => $this->msg('flickr-date-taken-granularity'), 'align' => 'top']
         );
+        $licenses = $commons->getLicenses();
+        $licenseOptions = [['data' => '']];
+        foreach ($licenses as $license) {
+            $licenseOptions[] = ['data' => $license['flickr_license_id'], 'label' => $this->msg('license-'.$license['commons_template'])];
+        }
+        $flickrLicenseWidget = new DropdownInputWidget([
+            'options' => $licenseOptions,
+            'value' => $flickrFile['license'] ?? '',
+        ]);
+        $flickrLicenseField = new FieldLayout(
+            $flickrLicenseWidget,
+            ['label' => $this->msg('flickr-license'), 'align' => 'top']
+        );
         $flickrLocationLatitudeWidget = new TextInputWidget([
             'value' => $flickrFile['location']['latitude'] ?? '',
             'name' => 'flickr[latitude]',
@@ -245,31 +278,46 @@ class MainController extends AbstractController
             $flickrLocationAccuracyWidget,
             ['label' => $this->msg('flickr-location-accuracy'), 'align' => 'top']
         );
-//        $tags = [];
-//        if (isset($flickrFile['tags']['tag'])) {
-//            foreach ($flickrFile['tags']['tag'] as $tag) {
-//                $tags[] = $tag['raw'];
-//            }
-//        }
+        $flickrPermsWidget = new CheckboxMultiselectInputWidget([
+            'options' => [
+                ['data' => 'public', 'label' => $this->msg('flickr-perms-public')],
+                ['data' => 'friend', 'label' => $this->msg('flickr-perms-friend')],
+                ['data' => 'family', 'label' => $this->msg('flickr-perms-family')],
+            ],
+            'value' => $flickrFile['perms'] ?? '',
+            'name' => 'flickr[perms][]',
+            'infusable' => true,
+            'disabled' => true,
+        ]);
+        $flickrPermsField = new FieldLayout(
+            $flickrPermsWidget,
+            ['label' => $this->msg('flickr-visibility'), 'align' => 'top']
+        );
         $flickrTagsWidget = new TextInputWidget([
             'name' => 'flickr[tags]',
-            'infusable' => true,
         ]);
         $flickrTagsWidget->setData($flickrFile['tags']['tag']);
         $flickrTagsField = new FieldLayout(
             $flickrTagsWidget,
-            ['label' => $this->msg('flickr-tags'), 'align' => 'top']
+            [
+                'label' => $this->msg('flickr-tags'),
+                'align' => 'top',
+                'infusable' => true,
+            ]
         );
         $flickrFieldset = new FieldsetLayout(['items' => [
             $flickrTitleField,
             $flickrDescriptionField,
-            new HorizontalLayout(['items' => [$flickrDateTakenField, $flickrDateTakenGranularityField]]),
+            new HorizontalLayout([
+                'items' => [$flickrDateTakenField, $flickrDateTakenGranularityField, $flickrLicenseField]
+            ]),
             new HorizontalLayout(['items' => [
                 $flickrLocationLatitudeField,
                 $flickrLocationLongitudeField,
                 $flickrLocationAccuracyField,
             ]]),
             $flickrTagsField,
+            $flickrPermsField,
         ]]);
 
         // Other fields.
@@ -324,6 +372,11 @@ class MainController extends AbstractController
             );
             $this->addFlash('notice', $this->msg('commons-data-saved'));
         }
+        // Save Commons caption.
+        if ($commonsLoggedIn && !empty($requestParams['commons']['caption'])) {
+            $commons->setCaption($commonsTitle, $requestParams['commons']['caption']);
+        }
+        // Save Flickr info.
         if (!empty($flickrId) && isset($requestParams['flickr']['title'])) {
             $flickr->save((int)$flickrId, $requestParams['flickr']);
             $this->addFlash('notice', $this->msg('flickr-data-saved'));
@@ -332,7 +385,7 @@ class MainController extends AbstractController
         // If we have both, redirect to both.
         if ($commonsTitle && $flickrId) {
             return $this->redirectToRoute('editBoth', [
-                'commonsTitle' => 'File:'.$uploaded['filename'],
+                'commonsTitle' => $commonsTitle,
                 'flickrId' => $flickrId,
             ]);
         }
@@ -342,5 +395,45 @@ class MainController extends AbstractController
         }
         // 3. And if only Commons, redirect there.
         return $this->redirectToRoute('editCommons', ['commonsTitle' => $commonsTitle]);
+    }
+
+    /**
+     * @Route("/tags", name="tags")
+     */
+    public function tagSearch(Request $request, Flickr $flickr)
+    {
+        $resultCount = 10;
+        $searchTerm = $request->get('q');
+        $results = [];
+        if ($searchTerm) {
+            // Get Wikidata.
+            $api = MediawikiApi::newFromApiEndpoint('https://www.wikidata.org/w/api.php');
+            $req = FluentRequest::factory()
+                ->setAction('wbsearchentities')
+                ->addParams([
+                    'search' => $searchTerm,
+                    'type' => 'item',
+                    'limit' => $resultCount,
+                    'language' => 'en',
+                ]);
+            $response = $api->getRequest($req);
+            foreach ($response['search'] as $info) {
+                $result = ['itemid' => $info['id'], 'data' => $info['label']];
+                if (isset($info['description'])) {
+                    $result['description'] = $info['description'];
+                }
+                if (isset($info['aliases'])) {
+                    $result['aliases'] = $info['aliases'];
+                }
+                $results[] = $result;
+            }
+            // Get Flickr.
+            if (count($results) < $resultCount) {
+                foreach (array_slice($flickr->getTags($searchTerm), 0, $resultCount) as $tag) {
+                    $results[] = ['label' => $tag];
+                }
+            }
+        }
+        return new JsonResponse(array_slice($results, 0, $resultCount));
     }
 }

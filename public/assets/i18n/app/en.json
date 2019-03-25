@@ -21,6 +21,7 @@
   "opens-in-new-tab": "Opens in new tab",
   "commons": "Commons",
   "commons-upload": "Upload this file to Commons?",
+  "commons-upload-please-log-in": "You must connect to Commons (link above) before you can upload photos.",
   "commons-title": "Title:",
   "commons-caption": "$1 caption:",
   "commons-page-text": "Page text:",
@@ -42,7 +43,11 @@
   "flickr-location-accuracy-region": "Region",
   "flickr-location-accuracy-country": "Country",
   "flickr-location-accuracy-world": "World",
+  "flickr-perms-public": "Public",
+  "flickr-perms-friend": "Friends",
+  "flickr-perms-family": "Family",
   "flickr-tags": "Tags:",
+  "wikidata-aliases": "Aliases:",
   "save": "Save all",
   "flickr-data-saved": "Flickr data saved!",
   "commons-data-saved": "Commons page saved!",
@@ -58,5 +63,11 @@
   "flickr-comment-count": "Comments:",
   "flickr-views": "Views:",
   "flickr-visibility": "Visibility:",
-  "flickr-sets": "Albums:"
+  "flickr-sets": "Albums:",
+
+  "flickr-license": "License:",
+  "license-cc-by-sa-2.0": "Creative Commons Attribution Share-Alike 2.0",
+  "license-cc-by-2.0": "Creative Commons Attribution 2.0",
+  "license-cc-zero": "Creative Commons Universal Public Domain Dedication",
+  "license-pd-usgov": "Public Domain United States Government"
 }

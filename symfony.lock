@@ -1,4 +1,7 @@
 {
+    "addwiki/mediawiki-api-base": {
+        "version": "2.4.0"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -275,8 +278,14 @@
     "symfony/polyfill-ctype": {
         "version": "v1.10.0"
     },
+    "symfony/polyfill-iconv": {
+        "version": "v1.11.0"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.10.0"
+    },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.11.0"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.10.0"

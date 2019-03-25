@@ -15,5 +15,8 @@
   },
   "devDependencies": {
     "eslint": "5.13.0"
+  },
+  "scripts": {
+    "assets": "encore dev --watch"
   }
 }

@@ -5,6 +5,7 @@ namespace App;
 
 use CURLFile;
 use Exception;
+use Krinkle\Intuition\Intuition;
 use MediaWiki\OAuthClient\Client;
 use MediaWiki\OAuthClient\Token;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -27,7 +28,10 @@ class Commons
     /** @var mixed[] */
     protected $info;
 
-    public function __construct(string $oauthUrl, Client $oauthClient, Session $session)
+    /** @var string */
+    protected $lang;
+
+    public function __construct(string $oauthUrl, Client $oauthClient, Session $session, Intuition $intuition)
     {
         if (preg_match('|meta.wikimedia.org|', $oauthUrl)) {
             $this->apiUrl = 'https://commons.wikimedia.org/w/api.php';
@@ -38,6 +42,7 @@ class Commons
         $this->oauthClient = $oauthClient;
         $loggedInUser = $session->get('logged_in_user');
         $this->currentUser = $loggedInUser ? $loggedInUser->username : false;
+        $this->lang = $intuition->getLang();
     }
 
     /**
@@ -108,14 +113,24 @@ class Commons
         ]);
         $parse = \GuzzleHttp\json_decode($result2, true);
 
-        //dd($imageInfo, $parse);
+        // Get caption.
+        $mediaId = 'M'.$imageInfo['pageid'];
+        $wbGetEntitiesResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, [
+            'action' => 'wbgetentities',
+            'format' => 'json',
+            'ids' => $mediaId,
+        ]);
+        $wbGetEntities = \GuzzleHttp\json_decode($wbGetEntitiesResult, true);
+
         $this->info = [
+            'pageid' => $imageInfo['pageid'],
             'fulltitle' => $imageInfo['title'],
             'title' => substr($imageInfo['title'], 5),
             'wikitext' => $parse['parse']['wikitext']['*'],
             'html' => $parse['parse']['text']['*'],
             'url' => $imageInfo['imageinfo'][0]['descriptionurl'],
             'img_src' => $imageInfo['imageinfo'][0]['thumburl'],
+            'caption' => $wbGetEntities['entities'][$mediaId]['labels'][$this->lang]['value'] ?? null,
         ];
         return $this->info;
     }
@@ -124,10 +139,15 @@ class Commons
      * @param $title
      * @param $text
      * @param $comment
-     * @return mixed[]
+     * @return bool
      */
-    public function savePage(string $title, string $text, string $comment): array
+    public function savePage(string $title, string $text, string $comment): bool
     {
+        $info = $this->getInfo($title);
+        if ($text === $info['wikitext']) {
+            // If nothing's changed, don't save.
+            return false;
+        }
         $tokenResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, [
             'action' => 'query',
             'meta' => 'tokens',
@@ -144,7 +164,38 @@ class Commons
             'summary' => $comment,
             'token' => $token,
         ]);
-        return \GuzzleHttp\json_decode($editResult, true);
+        $result = \GuzzleHttp\json_decode($editResult, true);
+        return true;
+    }
+
+    public function setCaption(string $title, string $caption)
+    {
+        $info = $this->getInfo($title);
+        if ($info['caption'] === $caption) {
+            // No change.
+            return;
+        }
+
+        // Get token.
+        $tokenResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, [
+            'action' => 'query',
+            'meta' => 'tokens',
+            'format' => 'json',
+        ]);
+        $tokenResultData = \GuzzleHttp\json_decode($tokenResult, true);
+        $token = $tokenResultData['query']['tokens']['csrftoken'];
+
+        // Save label.
+        $mediaId = 'M'.$info['pageid'];
+        $params = [
+            'action' => 'wbsetlabel',
+            'language' => $this->lang,
+            'id' => $mediaId,
+            'value' => $caption,
+            'format' => 'json',
+            'token' => $token,
+        ];
+        $wbSetLabelResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, $params);
     }
 
     /**
@@ -216,5 +267,15 @@ class Commons
             return (int)$matches[1];
         }
         // @TODO support https://flic.kr/p/2dTyzrk URLs.
+    }
+
+    public static function getLicenses()
+    {
+        return [
+            ['flickr_license_id' => 5, 'commons_template' => 'cc-by-sa-2.0'],
+            ['flickr_license_id' => 4, 'commons_template' => 'cc-by-2.0'],
+            ['flickr_license_id' => 9, 'commons_template' => 'cc-zero'],
+            ['flickr_license_id' => 8, 'commons_template' => 'pd-usgov'],
+        ];
     }
 }

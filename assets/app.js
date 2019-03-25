@@ -16,8 +16,6 @@ $( function () {
     $.i18n().locale = lang;
     $.i18n().load( messagesToLoadUls );
     $.i18n().load( messagesToLoadApp );
-
-    console.log($.i18n( 'flickr-duplicates-search' ));
 } );
 
 
@@ -88,7 +86,7 @@ $(function () {
         var flickrLatWidget, flickrLonWIdget, flickrAccuracyWidget,
             lat = 0,
             lon = 0,
-            flickrAccuracy = 16,
+            flickrAccuracy = 4,
             $flickrLatInput = $(":input[name='flickr[latitude]']");
         if ($flickrLatInput.length === 1) {
             flickrLatWidget = OO.ui.infuse($flickrLatInput.parents('.oo-ui-widget'));
@@ -110,16 +108,14 @@ $(function () {
         });
         // Add a marker at the specified location.
         function addMarker(latLng) {
+            var mapPinUrlPath, icon;
             if (map.hasLayer(marker)) {
                 map.removeLayer(marker);
             }
-            var x = require( 'oojs-ui/dist/themes/wikimediaui/images/icons/mapPin.svg' );
-            var icon = L.icon({iconUrl: x });
+            mapPinUrlPath = require('../node_modules/oojs-ui/dist/themes/wikimediaui/images/icons/mapPin.svg');
+            icon = L.icon({iconUrl: appConfig.baseUrl + 'assets/' + mapPinUrlPath, iconAnchor: [10, 20]});
             marker = L.marker(latLng, { clickable:true, draggable:true, icon: icon });
-            marker.on({
-                add: recordNewCoords,
-                dragend: recordNewCoords
-            });
+            marker.on({add: recordNewCoords, dragend: recordNewCoords});
             marker.addTo(map);
             map.panTo(marker.getLatLng());
         }
@@ -166,22 +162,30 @@ $(function () {
         } );
     }
 
-    var $originalTag = $( ':input[name="flickr[tags]"]' ).parents( '.oo-ui-widget' );
-    if ($originalTag.length === 1) {
-        var originalTagWidget = OO.ui.infuse($originalTag);
-        console.log(originalTagWidget.data);
+    /**
+     * Make the Commons edit summary required if any modification is made to the two Commons fields.
+     */
+    $( ':input[name^=commons]' ).on( 'change', function () {
+        $( ':input[name="commons[comment]"]' ).prop( 'required', true );
+    });
 
-        items = $.map( originalTagWidget.data, function ( tag ) {
-            return new OO.ui.MenuOptionWidget( { data: tag.raw } );
+    /**
+     * Tags.
+     */
+    var $tagWidgetElement = $( ':input[name="flickr[tags]"]' ).parents( '.oo-ui-widget' );
+    if ( $tagWidgetElement.length === 1 ) {
+        var tagWidget = OO.ui.infuse( $tagWidgetElement );
+        var selected = [];
+        tagWidget.data.forEach( function ( tag ) {
+            selected.push( tag.raw );
         } );
-        console.log(items);
-        var replacement = new OO.ui.MenuTagMultiselectWidget({
-            allowArbitrary: true,
-            menu: { items: items }
-        });
-//        replacement.addItems(originalTagWidget.data)
-        console.log(replacement);
-        $originalTag.after(replacement.$element);
+        require('./FlickrTagWidget');
+        var flickrTagWidget = new FlickrTagWidget( {
+            selected: selected,
+            name: 'foo'
+        } );
+        tagWidget.$element.after( flickrTagWidget.$element );
+        tagWidget.$element.hide();
     }
 
 });
