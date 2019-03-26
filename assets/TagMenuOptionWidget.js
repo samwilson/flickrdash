@@ -23,7 +23,6 @@ TagMenuOptionWidget = function tagMenuOptionWidget( config ) {
         .append( $( '<bdi>' ).text( config.description || '' ) );
 
     if (config.aliases) {
-        console.log(config.aliases);
         $description.append( ' <span class="aliases">' + $.i18n('wikidata-aliases') + ' ' + config.aliases.join(' &middot; ') );
     }
 

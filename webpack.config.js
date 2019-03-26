@@ -10,8 +10,6 @@
 		// Public URL path used by the web server to access the output path.
 		.setPublicPath( 'assets/' )
 
-		.setManifestKeyPrefix( 'foo')
-
 		// Set up global variables.
 		.autoProvideVariables( {
 			OO: 'oojs',

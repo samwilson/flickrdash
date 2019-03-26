@@ -168,7 +168,9 @@ class MainController extends AbstractController
         $commonsFieldset->addItems([$commonsCaptionField, $commonsPageTextField]);
         if ($commonsFile) {
             $commonsCommentWidget = new TextInputWidget([
+                'id' => 'commons-comment-widget',
                 'name' => 'commons[comment]',
+                'infusable' => true,
             ]);
             $commonsCommentField = new FieldLayout(
                 $commonsCommentWidget,

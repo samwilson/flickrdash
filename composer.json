@@ -1,6 +1,6 @@
 {
-    "name": "samwilson/flickr-commons",
-    "description": "A tool for copying photos from Flickr to Wikimedia Commons.",
+    "name": "samwilson/flickrdash",
+    "description": "A tool for working with Flickr and Wikimedia Commons.",
     "type": "project",
     "license": "GPL-3.0-or-later",
     "require": {
@@ -68,10 +68,6 @@
             "./node_modules/.bin/lessc --lint assets/*.less",
             "./node_modules/.bin/eslint .",
             "./bin/phpunit tests"
-        ],
-        "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
-        }
+        ]
     }
 }
