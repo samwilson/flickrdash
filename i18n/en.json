@@ -13,6 +13,7 @@
   "flickr-dupes": "Flickr de-duplication",
   "flickr-find-duplicates": "Find duplicates",
   "flickr-duplicates-search": "Search for duplicate photos",
+  "flickr-dupes-progress": "Photo $1 of $2",
 
   "recent-commons-uploads": "Your recent Commons uploads",
   "recent-flickr-uploads": "Your recent Flickr uploads",
@@ -64,6 +65,7 @@
   "flickr-views": "Views:",
   "flickr-visibility": "Visibility:",
   "flickr-sets": "Albums:",
+  "flickr-commons-link": "Add link to Commons",
 
   "flickr-license": "License:",
   "license-cc-by-sa-2.0": "Creative Commons Attribution Share-Alike 2.0",

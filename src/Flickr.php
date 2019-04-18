@@ -36,9 +36,9 @@ class Flickr
     public function getInfo(int $id, $extended = false): array
     {
         $photoInfo = $this->flickr->photos()->getInfo($id);
-        $photoInfo['shorturl'] = 'https://flic.kr/p/'.Util::base58encode($id);
-        $photoInfo['img_src'] = $this->flickr->buildPhotoURL($photoInfo, PhotosApi::SIZE_MEDIUM_800);
-        $photoInfo['original_url'] = $this->flickr->buildPhotoURL($photoInfo, 'original');
+        $photoInfo['shorturl'] = $this->flickr->urls()->getShortUrl($id);
+        $photoInfo['img_src'] = $this->flickr->urls()->getImageUrl($photoInfo, PhotosApi::SIZE_MEDIUM_800);
+        $photoInfo['original_url'] = $this->flickr->urls()->getImageUrl($photoInfo, PhotosApi::SIZE_ORIGINAL);
         if ($extended) {
             $photoInfo['dateuploaded_formatted'] = date('Y-m-d H:i:s', (int)$photoInfo['dateuploaded']);
             $sizes = $this->flickr->photos()->getSizes($id);

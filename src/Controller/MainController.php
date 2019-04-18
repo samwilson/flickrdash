@@ -154,9 +154,13 @@ class MainController extends AbstractController
             $commonsCaptionWidget,
             ['label' => $this->msg('commons-caption', [$this->intuition->getLangName()]), 'align' => 'top']
         );
+        $defaultWikitext = $this->renderView('commons.wikitext.twig', [
+            'flickr_file' => $flickrFile,
+            'lang' => $this->intuition->getLang(),
+        ]);
         $commonsPageTextWidget =new MultilineTextInputWidget([
             'id' => 'commons-page-text-widget',
-            'value' => $commonsFile['wikitext'] ?? $this->renderView('commons.wikitext.twig', ['flickr_file' => $flickrFile]),
+            'value' => $commonsFile['wikitext'] ?? $defaultWikitext,
             'name' => 'commons[page_text]',
             'rows' => 18,
             'infusable' => true,
@@ -272,7 +276,7 @@ class MainController extends AbstractController
                 ['data' => 2],
                 ['data' => 1, 'label' => '1: '.$this->msg('flickr-location-accuracy-world')],
             ],
-            'value' => $flickrFile['location']['accuracy'] ?? '',
+            'value' => $flickrFile['location']['accuracy'] ?? '1',
             'name' => 'flickr[accuracy]',
             'infusable' => true,
         ]);
@@ -364,6 +368,13 @@ class MainController extends AbstractController
                 $requestParams['commons']['page_text']
             );
             $commonsTitle = 'File:'.$uploaded['filename'];
+            // Add link from Flickr to Commons.
+            $requestParams['flickr']['description'] = $requestParams['flickr']['description']
+                ."\n\n"
+                ."<a href='https://commons.wikimedia.org/wiki/File:".urlencode($uploaded['filename'])."' rel='noreferrer nofollow'>"
+                .$uploaded['filename']
+                ."</a>";
+            // Tell the user.
             $this->addFlash('notice', $this->msg('commons-photo-uploaded'));
         } elseif ($commonsLoggedIn && !empty($requestParams['commons']['comment'])) {
             // Save existing Commons photo.

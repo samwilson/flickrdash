@@ -1,6 +1,6 @@
 == {{'{{'}}int:filedesc{{'}}'}} ==
 {{'{{'}}Information
-|description    = {{ flickr_file.description }}
+|description    = {{'{{'}}{{ lang }}|1={{ flickr_file.description }}{{'}}'}}
 |date           = {% if flickr_file.dates.takenunknown %}{{'{{'}}date-unknown{{'}}'}}{% else %}{{ flickr_file.dates.taken }}{% endif %}
 
 |source         = {{ flickr_file.urls.url.0._content }}

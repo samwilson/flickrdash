@@ -1,6 +1,9 @@
 // Workaround for OOUI and Webpack not loading things to global scope.
 global.OO = OO;
 
+global.App = {};
+require('./App.FlickrDupes');
+
 // Load i18n message files.
 $( function () {
     var lang = $( 'html' ).attr( 'lang' ),
@@ -15,62 +18,10 @@ $( function () {
     }
     $.i18n().locale = lang;
     $.i18n().load( messagesToLoadUls );
-    $.i18n().load( messagesToLoadApp );
+    $.i18n().load( messagesToLoadApp ).then( App.FlickrDupes.init );
 } );
 
-
 $(function () {
-
-    var searchButton = new OO.ui.ButtonWidget( { label: $.i18n( 'flickr-duplicates-search' ) } ),
-        dupesContainer = $("#flickr-dupes"),
-        progressBarField;
-
-    dupesContainer.append(searchButton.$element);
-
-    var progressBar = new OO.ui.ProgressBarWidget();
-
-
-    searchButton.on( 'click', function () {
-
-        progressBarField = new OO.ui.FieldLayout(progressBar, {
-            //align: 'top',
-            label: $.i18n('flickr-dupes-progress')
-        });
-        dupesContainer.append(progressBarField.$element);
-
-        getNextDuplicate( 1 );
-
-        // $.getJSON(dupesContainer.data('info-url'), function ( info ) {
-        //     console.log(info);
-        //     for ( var page = 1; page < info.pages; page++ ) {
-        //         console.log(page);
-        //         progressBar.setProgress( ( page / info.pages ) * 100 );
-        //         jQuery.ajax({
-        //             url: dupesContainer.data('info-url') + '/' + page,
-        //             type: 'get',
-        //             dataType: 'json',
-        //             success: function (data) {
-        //                 console.log(data);
-        //             },
-        //             //async: false,
-        //         } );
-        //     }
-        // });
-    });
-
-    function getNextDuplicate( pageNum ) {
-        $.getJSON(dupesContainer.data('info-url')+'/'+pageNum, function ( info ) {
-            console.log(info);
-            if (info.url) {
-                console.log("found!", info);
-                // @TODO redirect to URL.
-            } else {
-                console.log(pageNum, info.pages, ( pageNum / info.pages ) * 100 );
-                progressBar.setProgress( ( pageNum / info.pages ) * 100 );
-                getNextDuplicate( pageNum + 1 );
-            }
-        });
-    }
 
     // var searchButtonElement = $("#flickr-dupes-search-button");
     // if (searchButtonElement.length === 1) {
@@ -86,7 +37,7 @@ $(function () {
         var flickrLatWidget, flickrLonWIdget, flickrAccuracyWidget,
             lat = 0,
             lon = 0,
-            flickrAccuracy = 4,
+            zoom = 1,
             $flickrLatInput = $(":input[name='flickr[latitude]']");
         if ($flickrLatInput.length === 1) {
             flickrLatWidget = OO.ui.infuse($flickrLatInput.parents('.oo-ui-widget'));
@@ -94,9 +45,9 @@ $(function () {
             flickrLonWIdget = OO.ui.infuse($(":input[name='flickr[longitude]']").parents('.oo-ui-widget'));
             lon = flickrLonWIdget.getValue();
             flickrAccuracyWidget = OO.ui.infuse($(":input[name='flickr[accuracy]']").parents('.oo-ui-widget'));
-            flickrAccuracy = flickrAccuracyWidget.getValue();
+            zoom = flickrAccuracyWidget.getValue();
         }
-        var mapOptions = {center: [lat, lon], zoom: flickrAccuracy};
+        var mapOptions = {center: [lat, lon], zoom: zoom};
         var map = L.map( 'map', mapOptions ),
             marker;
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);

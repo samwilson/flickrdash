@@ -17,9 +17,6 @@
     "doctrine/collections": {
         "version": "v1.5.0"
     },
-    "doctrine/common": {
-        "version": "v2.10.0"
-    },
     "doctrine/event-manager": {
         "version": "v1.0.0"
     },
@@ -215,9 +212,6 @@
             "ref": "dc3fc2e0334a4137c47cfd5a3ececc601fa61a0b"
         }
     },
-    "symfony/form": {
-        "version": "v4.2.2"
-    },
     "symfony/framework-bundle": {
         "version": "4.2",
         "recipe": {
@@ -234,9 +228,6 @@
         "version": "v4.2.2"
     },
     "symfony/inflector": {
-        "version": "v4.2.2"
-    },
-    "symfony/intl": {
         "version": "v4.2.2"
     },
     "symfony/maker-bundle": {
@@ -260,9 +251,6 @@
             "ref": "18ebf5a940573a20de06f9c4060101eeb438cf3d"
         }
     },
-    "symfony/options-resolver": {
-        "version": "v4.2.2"
-    },
     "symfony/panther": {
         "version": "v0.2.0"
     },
@@ -280,9 +268,6 @@
     },
     "symfony/polyfill-iconv": {
         "version": "v1.11.0"
-    },
-    "symfony/polyfill-intl-icu": {
-        "version": "v1.10.0"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.11.0"
@@ -366,15 +351,6 @@
             "branch": "master",
             "version": "3.3",
             "ref": "369b5b29dc52b2c190002825ae7ec24ab6f962dd"
-        }
-    },
-    "symfony/validator": {
-        "version": "4.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "4.1",
-            "ref": "0cdc982334f45d554957a6167e030482795bf9d7"
         }
     },
     "symfony/var-dumper": {
