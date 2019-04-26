@@ -154,13 +154,13 @@ class MainController extends AbstractController
             $commonsCaptionWidget,
             ['label' => $this->msg('commons-caption', [$this->intuition->getLangName()]), 'align' => 'top']
         );
-        $defaultWikitext = $this->renderView('commons.wikitext.twig', [
+        $pageText = $commonsFile['wikitext'] ?? $this->renderView('commons.wikitext.twig', [
             'flickr_file' => $flickrFile,
             'lang' => $this->intuition->getLang(),
         ]);
         $commonsPageTextWidget =new MultilineTextInputWidget([
             'id' => 'commons-page-text-widget',
-            'value' => $commonsFile['wikitext'] ?? $defaultWikitext,
+            'value' => $pageText,
             'name' => 'commons[page_text]',
             'rows' => 18,
             'infusable' => true,
