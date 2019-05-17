@@ -43,7 +43,7 @@ $(function () {
         var mapOptions = {center: [lat, lon], zoom: zoom};
         var map = L.map( 'map', mapOptions ),
             marker;
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png').addTo(map);
         if ( lat && lon ) {
             addMarker({lat: lat, lng: lon});
         }
