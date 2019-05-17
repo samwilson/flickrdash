@@ -11,13 +11,11 @@ use Mediawiki\Api\MediawikiApi;
 use OOUI\ButtonInputWidget;
 use OOUI\CheckboxInputWidget;
 use OOUI\CheckboxMultiselectInputWidget;
-use OOUI\ComboBoxInputWidget;
 use OOUI\DropdownInputWidget;
 use OOUI\FieldLayout;
 use OOUI\FieldsetLayout;
 use OOUI\HorizontalLayout;
 use OOUI\MultilineTextInputWidget;
-use OOUI\RadioInputWidget;
 use OOUI\TextInputWidget;
 use Samwilson\PhpFlickr\FlickrException;
 use Samwilson\PhpFlickr\Util;
@@ -25,7 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
@@ -87,7 +84,7 @@ class MainController extends AbstractController
                 } catch (FlickrException $exception) {
                     $alerts[] = [
                         'type'=> 'warning',
-                        'message' => $this->msg('flickr-extracted-id-not-found', [$extractedFlickrId])
+                        'message' => $this->msg('flickr-extracted-id-not-found', [$extractedFlickrId]),
                     ];
                 }
             }
@@ -315,7 +312,7 @@ class MainController extends AbstractController
             $flickrTitleField,
             $flickrDescriptionField,
             new HorizontalLayout([
-                'items' => [$flickrDateTakenField, $flickrDateTakenGranularityField, $flickrLicenseField]
+                'items' => [$flickrDateTakenField, $flickrDateTakenGranularityField, $flickrLicenseField],
             ]),
             new HorizontalLayout(['items' => [
                 $flickrLocationLatitudeField,
@@ -369,8 +366,7 @@ class MainController extends AbstractController
             );
             $commonsTitle = 'File:'.$uploaded['filename'];
             // Add link from Flickr to Commons.
-            $requestParams['flickr']['description'] = $requestParams['flickr']['description']
-                ."\n\n"
+            $requestParams['flickr']['description'] .="\n\n"
                 ."<a href='https://commons.wikimedia.org/wiki/File:".urlencode($uploaded['filename'])."' rel='noreferrer nofollow'>"
                 .$uploaded['filename']
                 ."</a>";

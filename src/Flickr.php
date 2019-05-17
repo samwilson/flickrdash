@@ -5,10 +5,8 @@ namespace App;
 
 use App\Controller\FlickrAuthController;
 use DateTime;
-use Samwilson\PhpFlickr\FlickrException;
 use Samwilson\PhpFlickr\PhotosApi;
 use Samwilson\PhpFlickr\PhpFlickr;
-use Samwilson\PhpFlickr\Util;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class Flickr
@@ -114,7 +112,7 @@ class Flickr
      * @param int $photoId
      * @return string The file, with 'File:' prepended.
      */
-    public function getCommonsTitle(int $photoId)
+    public function getCommonsTitle(int $photoId): string
     {
         $info = $this->getInfo($photoId);
         preg_match('|https://commons.wikimedia.org/wiki/([^"\'<>\|]+)|m', $info['description'], $matches);

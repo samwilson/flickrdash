@@ -167,9 +167,7 @@ class FlickrDupesController extends AbstractController
      *     methods="POST"
      *     )
      */
-    public function delete(Flickr $flickr)
+    public function delete(Flickr $flickr): void
     {
-
     }
-
 }

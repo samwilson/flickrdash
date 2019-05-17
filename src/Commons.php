@@ -168,7 +168,7 @@ class Commons
         return true;
     }
 
-    public function setCaption(string $title, string $caption)
+    public function setCaption(string $title, string $caption): void
     {
         $info = $this->getInfo($title);
         if ($info['caption'] === $caption) {
@@ -257,7 +257,7 @@ class Commons
         return $uploadResponseData['upload'];
     }
 
-    public function getFlickrId(string $title)
+    public function getFlickrId(string $title): void
     {
         $info = $this->getInfo($title);
         if (!isset($info['html'])) {
