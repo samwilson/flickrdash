@@ -23,13 +23,6 @@ $( function () {
 
 $(function () {
 
-    // var searchButtonElement = $("#flickr-dupes-search-button");
-    // if (searchButtonElement.length === 1) {
-    //     console.log(searchButtonElement);
-    //     var searchButton = OO.ui.infuse(searchButtonElement);
-    //     console.log(searchButton);
-    // }
-
     /**
      * Set up the map.
      */
@@ -131,10 +124,7 @@ $(function () {
             selected.push( tag.raw );
         } );
         require('./FlickrTagWidget');
-        var flickrTagWidget = new FlickrTagWidget( {
-            selected: selected,
-            name: 'foo'
-        } );
+        var flickrTagWidget = new FlickrTagWidget( { selected: selected } );
         tagWidget.$element.after( flickrTagWidget.$element );
         tagWidget.$element.hide();
     }
