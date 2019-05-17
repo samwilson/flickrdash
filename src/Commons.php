@@ -196,6 +196,7 @@ class Commons
             'token' => $token,
         ];
         $wbSetLabelResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, $params);
+        dd($wbSetLabelResult);
     }
 
     /**

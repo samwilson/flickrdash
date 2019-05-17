@@ -2,6 +2,9 @@
   "app-title": "Flickr Dashboard",
   "introduction": "Introduction",
   "home": "Home",
+  "version": "This is flickrdash $1 ($2)",
+  "issue-tracker": "Issue tracker",
+  "licenced-under": "GPL 3.0+",
 
   "help": "Help",
   "login": "Connect to Commons",
