@@ -29,9 +29,10 @@ class Flickr
 
     /**
      * @param int $id
+     * @param bool $extended
      * @return mixed[]
      */
-    public function getInfo(int $id, $extended = false): array
+    public function getInfo(int $id, ?bool $extended = false): array
     {
         $photoInfo = $this->flickr->photos()->getInfo($id);
         $photoInfo['shorturl'] = $this->flickr->urls()->getShortUrl($id);
@@ -123,7 +124,11 @@ class Flickr
         return false;
     }
 
-    public function getTags($searchTerm)
+    /**
+     * @param string $searchTerm
+     * @return string[][]
+     */
+    public function getTags(string $searchTerm): array
     {
         $tags = $this->flickr->tags_getRelated($searchTerm);
         $out = [];
@@ -131,5 +136,35 @@ class Flickr
             $out[] = $tag;
         }
         return $out;
+    }
+
+    /**
+     * @return int|bool
+     */
+    public function getNextNonGeolocated()
+    {
+        $page = 1;
+        do {
+            $res = $this->flickr->people()->getPhotos(
+                'me',
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                'geo',
+                100,
+                $page
+            );
+            foreach ($res['photo'] as $photo) {
+                if (0 === $photo['latitude'] && 0 === $photo['longitude']) {
+                    return (int)$photo['id'];
+                }
+            }
+            $page++;
+        } while ($res['page'] <= $res['total']);
+        return false;
     }
 }

@@ -19,6 +19,10 @@
 
         <div class="two-cols">
             <section class="commons col form">
+                <p>
+                    {{ msg('navigation') }}
+                    <a href="{{ path('commons_geotodo') }}">{{ msg('geotodo') }}</a>
+                </p>
                 <h2>
                     <em>{{ msg('commons') }}</em>
                     {% if commons_file %}
@@ -28,6 +32,10 @@
                 {{ commons_fieldset|raw }}
             </section>
             <section class="flickr col form">
+                <p>
+                    {{ msg('navigation') }}
+                    <a href="{{ path('flickr_geotodo') }}">{{ msg('geotodo') }}</a>
+                </p>
                 {% if flickr_file %}
                     <h2>
                         <em>{{ msg('flickr') }}</em>
