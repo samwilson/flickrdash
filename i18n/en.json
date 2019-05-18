@@ -25,6 +25,8 @@
 
   "flickr-extracted-id-not-found": "The Flickr photo linked from this Commons file (ID $1) can not be found.",
   "opens-in-new-tab": "Opens in new tab",
+  "navigation": "Navigation:",
+  "geotodo": "Next non-geolocated",
   "commons": "Commons",
   "commons-upload": "Upload this file to Commons?",
   "commons-upload-please-log-in": "You must connect to Commons (link above) before you can upload photos.",

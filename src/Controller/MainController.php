@@ -20,27 +20,13 @@ use OOUI\MultilineTextInputWidget;
 use OOUI\TextInputWidget;
 use Samwilson\PhpFlickr\FlickrException;
 use Samwilson\PhpFlickr\Util;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MainController extends AbstractController
+class MainController extends ControllerBase
 {
-
-    /** @var Intuition */
-    protected $intuition;
-
-    public function __construct(Intuition $intuition)
-    {
-        $this->intuition = $intuition;
-    }
-
-    protected function msg($message, $vars = [])
-    {
-        return $this->intuition->msg($message, ['variables' => $vars]);
-    }
 
     /**
      * @Route("/", name="home")

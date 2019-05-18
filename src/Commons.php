@@ -155,7 +155,7 @@ class Commons
         $tokenResultData = \GuzzleHttp\json_decode($tokenResult, true);
         $token = $tokenResultData['query']['tokens']['csrftoken'];
 
-        $editResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, [
+        $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, [
             'action' => 'edit',
             'title' => $title,
             'format' => 'json',
@@ -163,7 +163,6 @@ class Commons
             'summary' => $comment,
             'token' => $token,
         ]);
-        $result = \GuzzleHttp\json_decode($editResult, true);
         return true;
     }
 
@@ -287,5 +286,57 @@ class Commons
             ['flickr_license_id' => 9, 'commons_template' => 'cc-zero'],
             ['flickr_license_id' => 8, 'commons_template' => 'pd-usgov'],
         ];
+    }
+
+    public function getNextNonGeolocated()
+    {
+        $params = [
+            'action' => 'query',
+            'format' => 'json',
+            'list' => 'usercontribs',
+            'ucuser' => $this->currentUser,
+            'ucnamespace' => 6,
+            'ucprop' => 'title',
+            // 'uclimit' = 500,
+        ];
+        $contribsData = null;
+        do {
+            if (isset($contribsData['continue']['uccontinue'])) {
+                $params['uccontinue'] = $contribsData['continue']['uccontinue'];
+            }
+            $contribsResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, $params);
+            $contribsData = \GuzzleHttp\json_decode($contribsResult, true);
+
+            // Collate this batch of file titles.
+            $allTitles = [];
+            foreach ($contribsData['query']['usercontribs'] as $contrib) {
+                // Title has the 'File:' prefix.
+                $allTitles[] = $contrib['title'];
+            }
+            $titles = array_unique($allTitles);
+
+            // Get coordinates of this batch of titles.
+            $coordsParams = [
+                'action' => 'query',
+                'format' => 'json',
+                'prop' => 'coordinates',
+                'titles' => join('|', $titles),
+                'coprop' => 'type|name|dim|country|region',
+                'coprimary' => 'all',
+            ];
+            $coordsResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, $coordsParams);
+            $coordsData = \GuzzleHttp\json_decode($coordsResult, true);
+
+            // See if there is a file without coordinates.
+            foreach ($coordsData['query']['pages'] as $coordInfo) {
+                if (empty($coordInfo['coordinates'])) {
+                    return $coordInfo['title'];
+                }
+            }
+
+        } while (isset($contribsData['continue']['uccontinue']));
+
+        // If all files have coordinates, return false.
+        return false;
     }
 }
