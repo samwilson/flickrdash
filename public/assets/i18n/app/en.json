@@ -4,11 +4,12 @@
   "home": "Home",
   "version": "This is flickrdash $1 ($2)",
   "issue-tracker": "Issue tracker",
+  "source-code": "Source code",
   "licenced-under": "GPL 3.0+",
 
   "help": "Help",
   "login": "Connect to Commons",
-  "logout": "Disconnect from Commons",
+  "logout": "Log out",
   "flickr-login": "Connect to Flickr",
   "flickr-logout": "Disconnect from Flickr",
   "logged-in-as": "Connected to Commons as $1",
@@ -20,6 +21,7 @@
 
   "recent-commons-uploads": "Your recent Commons uploads",
   "recent-flickr-uploads": "Your recent Flickr uploads",
+  "no-commons-files": "You have not uploaded any photos to Commons yet.",
 
   "flickr-extracted-id-not-found": "The Flickr photo linked from this Commons file (ID $1) can not be found.",
   "opens-in-new-tab": "Opens in new tab",

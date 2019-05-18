@@ -77,7 +77,8 @@ class Flickr
             null,
             null,
             null,
-            'url_'.PhotosApi::SIZE_THUMBNAIL
+            'url_'.PhotosApi::SIZE_THUMBNAIL,
+            20
         );
         return $photos['photo'];
     }
@@ -110,15 +111,16 @@ class Flickr
 
     /**
      * @param int $photoId
-     * @return string The file, with 'File:' prepended.
+     * @return string|bool The file, with 'File:' prepended.
      */
-    public function getCommonsTitle(int $photoId): string
+    public function getCommonsTitle(int $photoId)
     {
         $info = $this->getInfo($photoId);
         preg_match('|https://commons.wikimedia.org/wiki/([^"\'<>\|]+)|m', $info['description'], $matches);
         if (isset($matches[1])) {
             return $matches[1];
         }
+        return false;
     }
 
     public function getTags($searchTerm)

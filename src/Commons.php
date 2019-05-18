@@ -31,13 +31,9 @@ class Commons
     /** @var string */
     protected $lang;
 
-    public function __construct(string $oauthUrl, Client $oauthClient, Session $session, Intuition $intuition)
+    public function __construct(string $wikiUrl, Client $oauthClient, Session $session, Intuition $intuition)
     {
-        if (preg_match('|meta.wikimedia.org|', $oauthUrl)) {
-            $this->apiUrl = 'https://commons.wikimedia.org/w/api.php';
-        } else {
-            $this->apiUrl = preg_replace('|index\.php.*|', 'api.php', $oauthUrl);
-        }
+        $this->apiUrl = $wikiUrl;
         $this->accessToken = $session->get('oauth.access_token');
         $this->oauthClient = $oauthClient;
         $loggedInUser = $session->get('logged_in_user');
@@ -84,9 +80,9 @@ class Commons
 
     /**
      * @param string $title
-     * @return mixed[]
+     * @return mixed[]|bool
      */
-    public function getInfo(string $title): array
+    public function getInfo(string $title)
     {
         if ($this->info) {
             return $this->info;
@@ -104,6 +100,9 @@ class Commons
             return [];
         }
         $imageInfo = array_shift($imageInfoResult['query']['pages']);
+        if (isset($imageInfo['missing'])) {
+            return false;
+        }
 
         $result2 = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, [
             'action' => 'parse',
@@ -168,12 +167,17 @@ class Commons
         return true;
     }
 
-    public function setCaption(string $title, string $caption): void
+    /**
+     * @param string $title Page title, with 'File'
+     * @param string $caption
+     * @return bool
+     */
+    public function setCaption(string $title, string $caption): bool
     {
         $info = $this->getInfo($title);
         if ($info['caption'] === $caption) {
             // No change.
-            return;
+            return false;
         }
 
         // Get token.
@@ -196,7 +200,8 @@ class Commons
             'token' => $token,
         ];
         $wbSetLabelResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, $params);
-        dd($wbSetLabelResult);
+        $wbSetLabelData = \GuzzleHttp\json_decode($wbSetLabelResult, true);
+        return isset($wbSetLabelData['success']) && 1 === $wbSetLabelData['success'];
     }
 
     /**
@@ -257,11 +262,15 @@ class Commons
         return $uploadResponseData['upload'];
     }
 
-    public function getFlickrId(string $title): void
+    /**
+     * @param string $title
+     * @return int|bool
+     */
+    public function getFlickrId(string $title)
     {
         $info = $this->getInfo($title);
         if (!isset($info['html'])) {
-            return;
+            return false;
         }
         preg_match('|https://www.flickr.com/photos/[^/]+/([0-9]+)|m', $info['html'], $matches);
         if (isset($matches[1])) {

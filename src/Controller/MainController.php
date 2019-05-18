@@ -9,6 +9,7 @@ use Krinkle\Intuition\Intuition;
 use Mediawiki\Api\FluentRequest;
 use Mediawiki\Api\MediawikiApi;
 use OOUI\ButtonInputWidget;
+use OOUI\ButtonWidget;
 use OOUI\CheckboxInputWidget;
 use OOUI\CheckboxMultiselectInputWidget;
 use OOUI\DropdownInputWidget;
@@ -61,6 +62,14 @@ class MainController extends AbstractController
             'flickr_logged_in' => $flickrLoggedIn,
             'recent_commons_files' => $recentCommonsFiles,
             'recent_flickr_files' => $recentFlickrFiles,
+            'commons_login_button' => new ButtonWidget([
+                'label' => $this->msg('login'),
+                'href' => $this->generateUrl('toolforge_login'),
+            ]),
+            'flickr_login_button' => new ButtonWidget([
+                'label' => $this->msg('flickr-login'),
+                'href' => $this->generateUrl('flickr_login'),
+            ]),
         ]);
     }
 
@@ -91,7 +100,7 @@ class MainController extends AbstractController
         }
         if (empty($commonsTitle) && !empty($flickrId)) {
             $commonsTitle = $flickr->getCommonsTitle((int)$flickrId);
-            if ($commonsTitle) {
+            if ($commonsTitle && false !== $commons->getInfo($commonsTitle)) {
                 return $this->redirectToRoute(
                     'editBoth',
                     ['commonsTitle' => $commonsTitle, 'flickrId' => $flickrId]

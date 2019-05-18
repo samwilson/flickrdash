@@ -2,23 +2,34 @@
 
 {% block main %}
 
-    <div class="two-cols recent-photos">
+<div class="two-cols recent-photos">
 
     <section class="col">
         <h2>{{ msg('recent-commons-uploads') }}</h2>
-        {% spaceless %}
+        {% if logged_in_user() %}
+            <p>{{ msg( 'logged-in-as', [ logged_in_user().username ] ) }}</p>
+        {% else %}
+            <p>{{ commons_login_button|raw }}</p>
+        {% endif %}
         <div class="thumbnails">
         {% for image in recent_commons_files %}
             <a href="{{ path( 'editCommons', { commonsTitle: image.fulltitle } ) }}">
                 <img src="{{ image.imageinfo.0.thumburl }}" />
                 {{ image.title }}
             </a>
+        {% else %}
+            <p><em>{{ msg('no-commons-files') }}</em></p>
         {% endfor %}
         </div>
-        {% endspaceless %}
     </section>
+
     <section class="thumbnails col">
         <h2>{{ msg('recent-flickr-uploads') }}</h2>
+        {% if flickr_logged_in %}
+            <p><em></em></p>
+        {% else %}
+            <p>{{ flickr_login_button|raw }}</p>
+        {% endif %}
         <div class="thumbnails">
             {% for image in recent_flickr_files %}
                 <a href="{{ path( 'editFlickr', { flickrId: image.id } ) }}">
@@ -28,6 +39,7 @@
             {% endfor %}
         </div>
     </section>
-    </div>
+
+</div>
 
 {% endblock %}

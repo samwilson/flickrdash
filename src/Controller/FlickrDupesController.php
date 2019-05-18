@@ -142,7 +142,7 @@ class FlickrDupesController extends AbstractController
     /**
      * Compare two FLickr photos and provide the means of deleting one.
      * @Route(
-     *     "/flickrdupes/{id1}/{id2}",
+     *     "/flickr/dupes/{id1}/{id2}",
      *     name="flickr_dupes_compare",
      *     requirements={"id1"="\d+", "id2"="\d+"}
      *     )
@@ -162,8 +162,8 @@ class FlickrDupesController extends AbstractController
     /**
      * Compare two FLickr photos and provide the means of deleting one.
      * @Route(
-     *     "/flickr_dupe_delete",
-     *     name="flickr_dupe_delete",
+     *     "/flickr/dupes/delete",
+     *     name="flickr_dupes_delete",
      *     methods="POST"
      *     )
      */

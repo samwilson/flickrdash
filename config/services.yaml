@@ -32,7 +32,7 @@ services:
             $secret: '%env(FLICKR_OAUTH_SECRET)%'
 
     App\Commons:
-        $oauthUrl: '%env(OAUTH_URL)%'
+        $wikiUrl: '%env(WIKI_URL)%'
         $oauthClient: '@MediaWiki\OAuthClient\Client'
         $session: "@session"
 
