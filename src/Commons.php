@@ -344,7 +344,6 @@ class Commons
                     return $coordInfo['title'];
                 }
             }
-
         } while (isset($contribsData['continue']['uccontinue']));
 
         // If all files have coordinates, return false.

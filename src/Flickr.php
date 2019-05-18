@@ -5,6 +5,7 @@ namespace App;
 
 use App\Controller\FlickrAuthController;
 use DateTime;
+use OAuth\OAuth1\Token\StdOAuth1Token;
 use Samwilson\PhpFlickr\PhotosApi;
 use Samwilson\PhpFlickr\PhpFlickr;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -21,13 +22,27 @@ class Flickr
     /** @var mixed[] */
     protected $info;
 
+    /** @var string */
+    protected $userId;
+
     public function __construct(Session $session, PhpFlickr $phpFlickr)
     {
+        /** @var StdOAuth1Token $accessToken */
         $accessToken = $session->get(FlickrAuthController::SESSION_KEY);
+        $this->userId = false;
         if ($accessToken) {
             $phpFlickr->getOauthTokenStorage()->storeAccessToken('Flickr', $accessToken);
+            $this->userId = $accessToken->getExtraParams()['user_nsid'];
         }
         $this->flickr = $phpFlickr;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserId()
+    {
+        return $this->userId;
     }
 
     /**
@@ -64,7 +79,7 @@ class Flickr
                 $photoInfo['perms'][] = $audience;
             }
         }
-        $photoInfo['ismine'] = $this->flickr->test()->login()['id'] === $photoInfo['owner']['nsid'];
+        $photoInfo['ismine'] = $this->userId === $photoInfo['owner']['nsid'];
         $this->info = $photoInfo;
         return $this->info;
     }
@@ -74,7 +89,7 @@ class Flickr
      */
     public function getRecentUploads(): array
     {
-        if (!$this->flickr->test()->login()) {
+        if (!$this->userId) {
             return [];
         }
         $photos = $this->flickr->people()->getPhotos(

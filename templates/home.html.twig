@@ -25,9 +25,7 @@
 
     <section class="thumbnails col">
         <h2>{{ msg('recent-flickr-uploads') }}</h2>
-        {% if flickr_logged_in %}
-            <p><em></em></p>
-        {% else %}
+        {% if not flickr_logged_in %}
             <p>{{ flickr_login_button|raw }}</p>
         {% endif %}
         <div class="thumbnails">

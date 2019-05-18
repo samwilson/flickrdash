@@ -1657,16 +1657,16 @@
         },
         {
             "name": "samwilson/phpflickr",
-            "version": "4.11.0",
+            "version": "4.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/samwilson/phpflickr.git",
-                "reference": "40d1a8ed02985651dceb73df64e4211315b7974b"
+                "reference": "e409aa5516eb21b663dbe58aa5415cf469a8d8f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/samwilson/phpflickr/zipball/40d1a8ed02985651dceb73df64e4211315b7974b",
-                "reference": "40d1a8ed02985651dceb73df64e4211315b7974b",
+                "url": "https://api.github.com/repos/samwilson/phpflickr/zipball/e409aa5516eb21b663dbe58aa5415cf469a8d8f7",
+                "reference": "e409aa5516eb21b663dbe58aa5415cf469a8d8f7",
                 "shasum": ""
             },
             "require": {
@@ -1695,7 +1695,7 @@
                 "GPL-3.0-or-later"
             ],
             "description": "A PHP wrapper for the Flickr API, including Oauth.",
-            "time": "2019-04-18T00:36:03+00:00"
+            "time": "2019-05-18T17:35:58+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -4614,16 +4614,16 @@
         },
         {
             "name": "wikimedia/toolforge-bundle",
-            "version": "0.14.3",
+            "version": "0.14.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wikimedia/ToolforgeBundle.git",
-                "reference": "adab343963a27e623fa481949d18baa060be526a"
+                "reference": "1f3695ee47cbbb6fbf0556e9006f4d41e87da796"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wikimedia/ToolforgeBundle/zipball/adab343963a27e623fa481949d18baa060be526a",
-                "reference": "adab343963a27e623fa481949d18baa060be526a",
+                "url": "https://api.github.com/repos/wikimedia/ToolforgeBundle/zipball/1f3695ee47cbbb6fbf0556e9006f4d41e87da796",
+                "reference": "1f3695ee47cbbb6fbf0556e9006f4d41e87da796",
                 "shasum": ""
             },
             "require": {
@@ -4657,7 +4657,7 @@
             ],
             "description": "Symfony 4 bundle providing useful Toolforge features.",
             "homepage": "https://github.com/wikimedia/toolforgebundle",
-            "time": "2019-05-02T04:14:11+00:00"
+            "time": "2019-05-17T15:55:37+00:00"
         }
     ],
     "packages-dev": [

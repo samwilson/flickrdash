@@ -35,6 +35,7 @@
   "commons-page-text": "Page text:",
   "commons-change-comment": "Edit summary:",
   "flickr": "Flickr",
+  "not-your-file": "This Flickr photo is not yours and so is not editable.",
   "flickr-title": "Title:",
   "flickr-description": "Description:",
   "flickr-date-taken": "Date taken:",

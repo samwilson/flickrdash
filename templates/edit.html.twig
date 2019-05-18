@@ -41,6 +41,9 @@
                         <em>{{ msg('flickr') }}</em>
                         &middot; <a href="{{ flickr_file.shorturl }}" target="_blank" title="{{ msg('opens-in-new-tab') }}">{{ flickr_file.shorturl }}</a>
                     </h2>
+                    {% if not flickr_file.ismine %}
+                        <p><em>{{ msg('not-your-file') }}</em></p>
+                    {% endif %}
                     {{ flickr_fieldset|raw }}
                 {% endif %}
             </section>
@@ -55,5 +58,7 @@
 {% endblock %}
 
 {% block script %}
-appConfig.coords = {{ commons_file.coordinates|json_encode|raw }};
+    {% if commons_file %}
+        appConfig.coords = {{ commons_file.coordinates|json_encode|raw }};
+    {% endif %}
 {% endblock %}

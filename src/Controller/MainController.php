@@ -5,7 +5,6 @@ namespace App\Controller;
 
 use App\Commons;
 use App\Flickr;
-use Krinkle\Intuition\Intuition;
 use Mediawiki\Api\FluentRequest;
 use Mediawiki\Api\MediawikiApi;
 use OOUI\ButtonInputWidget;
@@ -33,7 +32,7 @@ class MainController extends ControllerBase
      */
     public function home(Session $session, Commons $commons, Flickr $flickr)
     {
-        $flickrLoggedIn = $session->has(FlickrAuthController::SESSION_KEY);
+        $flickrLoggedIn = false !== $flickr->getUserId();
         $recentFlickrFiles = [];
         if ($flickrLoggedIn) {
             $recentFlickrFiles = $flickr->getRecentUploads();
@@ -301,7 +300,7 @@ class MainController extends ControllerBase
         );
         $flickrTagsWidget = new TextInputWidget([
             'name' => 'flickr[tags]',
-            'disabled' => !$flickrFile['ismine'] || $flickrFile['permissions']['permaddmeta'] !== 3,
+            'disabled' => !$flickrFile['ismine'] || 3 !== $flickrFile['permissions']['permaddmeta'],
         ]);
         $flickrTagsWidget->setData($flickrFile['tags']['tag']);
         $flickrTagsField = new FieldLayout(
