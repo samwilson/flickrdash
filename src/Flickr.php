@@ -18,6 +18,9 @@ class Flickr
     /** @var string */
     protected $sessionKey = 'phpflickr-oauth-access-token';
 
+    /** @var mixed[] */
+    protected $info;
+
     public function __construct(Session $session, PhpFlickr $phpFlickr)
     {
         $accessToken = $session->get(FlickrAuthController::SESSION_KEY);
@@ -34,6 +37,9 @@ class Flickr
      */
     public function getInfo(int $id, ?bool $extended = false): array
     {
+        if ($this->info) {
+            return $this->info;
+        }
         $photoInfo = $this->flickr->photos()->getInfo($id);
         $photoInfo['shorturl'] = $this->flickr->urls()->getShortUrl($id);
         $photoInfo['img_src'] = $this->flickr->urls()->getImageUrl($photoInfo, PhotosApi::SIZE_MEDIUM_800);
@@ -58,7 +64,9 @@ class Flickr
                 $photoInfo['perms'][] = $audience;
             }
         }
-        return $photoInfo;
+        $photoInfo['ismine'] = $this->flickr->test()->login()['id'] === $photoInfo['owner']['nsid'];
+        $this->info = $photoInfo;
+        return $this->info;
     }
 
     /**

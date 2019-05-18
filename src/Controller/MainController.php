@@ -179,6 +179,7 @@ class MainController extends ControllerBase
         $flickrTitleWidget = new TextInputWidget([
             'value' => $flickrFile['title'] ?? '',
             'name' => 'flickr[title]',
+            'disabled' => !$flickrFile['ismine'],
         ]);
         $flickrTitleField = new FieldLayout(
             $flickrTitleWidget,
@@ -190,6 +191,7 @@ class MainController extends ControllerBase
             'name' => 'flickr[description]',
             'rows' => 5,
             'infusable' => true,
+            'disabled' => !$flickrFile['ismine'],
         ]);
         $flickrDescriptionField = new FieldLayout(
             $flickrDescriptionWidget,
@@ -198,6 +200,7 @@ class MainController extends ControllerBase
         $flickrDateTakenWidget = new TextInputWidget([
             'value' => $flickrFile['dates']['taken'] ?? '',
             'name' => 'flickr[datetaken]',
+            'disabled' => !$flickrFile['ismine'],
         ]);
         $flickrDateTakenField = new FieldLayout(
             $flickrDateTakenWidget,
@@ -213,6 +216,7 @@ class MainController extends ControllerBase
             'value' => $flickrFile['dates']['takengranularity'] ?? '',
             'name' => 'flickr[datetakengranularity]',
             'infusable' => true,
+            'disabled' => !$flickrFile['ismine'],
         ]);
         $flickrDateTakenGranularityField = new FieldLayout(
             $flickrDateTakenGranularityWidget,
@@ -226,6 +230,7 @@ class MainController extends ControllerBase
         $flickrLicenseWidget = new DropdownInputWidget([
             'options' => $licenseOptions,
             'value' => $flickrFile['license'] ?? '',
+            'disabled' => !$flickrFile['ismine'],
         ]);
         $flickrLicenseField = new FieldLayout(
             $flickrLicenseWidget,
@@ -235,6 +240,7 @@ class MainController extends ControllerBase
             'value' => $flickrFile['location']['latitude'] ?? '',
             'name' => 'flickr[latitude]',
             'infusable' => true,
+            'disabled' => !$flickrFile['ismine'],
         ]);
         $flickrLocationLatitudeField = new FieldLayout(
             $flickrLocationLatitudeWidget,
@@ -244,6 +250,7 @@ class MainController extends ControllerBase
             'value' => $flickrFile['location']['longitude'] ?? '',
             'name' => 'flickr[longitude]',
             'infusable' => true,
+            'disabled' => !$flickrFile['ismine'],
         ]);
         $flickrLocationLongitudeField = new FieldLayout(
             $flickrLocationLongitudeWidget,
@@ -271,6 +278,7 @@ class MainController extends ControllerBase
             'value' => $flickrFile['location']['accuracy'] ?? '1',
             'name' => 'flickr[accuracy]',
             'infusable' => true,
+            'disabled' => !$flickrFile['ismine'],
         ]);
         $flickrLocationAccuracyField = new FieldLayout(
             $flickrLocationAccuracyWidget,
@@ -293,6 +301,7 @@ class MainController extends ControllerBase
         );
         $flickrTagsWidget = new TextInputWidget([
             'name' => 'flickr[tags]',
+            'disabled' => !$flickrFile['ismine'] || $flickrFile['permissions']['permaddmeta'] !== 3,
         ]);
         $flickrTagsWidget->setData($flickrFile['tags']['tag']);
         $flickrTagsField = new FieldLayout(
@@ -361,10 +370,12 @@ class MainController extends ControllerBase
             );
             $commonsTitle = 'File:'.$uploaded['filename'];
             // Add link from Flickr to Commons.
-            $requestParams['flickr']['description'] .="\n\n"
-                ."<a href='https://commons.wikimedia.org/wiki/File:".urlencode($uploaded['filename'])."' rel='noreferrer nofollow'>"
-                .$uploaded['filename']
-                ."</a>";
+            if (isset($requestParams['flickr']['description'])) {
+                $requestParams['flickr']['description'] .= "\n\n"
+                    ."<a href='https://commons.wikimedia.org/wiki/File:".urlencode($uploaded['filename'])."' rel='noreferrer nofollow'>"
+                    .$uploaded['filename']
+                    ."</a>";
+            }
             // Tell the user.
             $this->addFlash('notice', $this->msg('commons-photo-uploaded'));
         } elseif ($commonsLoggedIn && !empty($requestParams['commons']['comment'])) {

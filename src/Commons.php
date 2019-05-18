@@ -89,7 +89,7 @@ class Commons
         }
         $result1 = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, [
             'action' => 'query',
-            'prop' => 'imageinfo',
+            'prop' => 'imageinfo|coordinates',
             'titles' => str_replace(' ', '_', $title),
             'format' => 'json',
             'iiprop' => 'url',
@@ -102,6 +102,16 @@ class Commons
         $imageInfo = array_shift($imageInfoResult['query']['pages']);
         if (isset($imageInfo['missing'])) {
             return false;
+        }
+
+        // Get coordinates.
+        $coords = ['lat' => '', 'lon' => ''];
+        if (isset($imageInfo['coordinates'])) {
+            foreach ($imageInfo['coordinates'] as $coord) {
+                if (isset($coord['primary'])) {
+                    $coords = ['lat' => $coord['lat'], 'lon' => $coord['lon']];
+                }
+            }
         }
 
         $result2 = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, [
@@ -129,6 +139,7 @@ class Commons
             'html' => $parse['parse']['text']['*'],
             'url' => $imageInfo['imageinfo'][0]['descriptionurl'],
             'img_src' => $imageInfo['imageinfo'][0]['thumburl'],
+            'coordinates' => $coords,
             'caption' => $wbGetEntities['entities'][$mediaId]['labels'][$this->lang]['value'] ?? null,
         ];
         return $this->info;

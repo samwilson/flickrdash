@@ -53,3 +53,7 @@
     </form>
 
 {% endblock %}
+
+{% block script %}
+appConfig.coords = {{ commons_file.coordinates|json_encode|raw }};
+{% endblock %}

@@ -32,7 +32,10 @@ $(function () {
             lon = 0,
             zoom = 1,
             $flickrLatInput = $(":input[name='flickr[latitude]']");
-        if ($flickrLatInput.length === 1) {
+        if (appConfig.coords !== undefined) {
+            lat = appConfig.coords.lat;
+            lon = appConfig.coords.lon;
+        } else if ($flickrLatInput.length === 1) {
             flickrLatWidget = OO.ui.infuse($flickrLatInput.parents('.oo-ui-widget'));
             lat = flickrLatWidget.getValue();
             flickrLonWIdget = OO.ui.infuse($(":input[name='flickr[longitude]']").parents('.oo-ui-widget'));
