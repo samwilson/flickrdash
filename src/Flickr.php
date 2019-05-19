@@ -175,7 +175,7 @@ class Flickr
                 null,
                 null,
                 null,
-                null,
+                1,
                 null,
                 'geo',
                 100,
