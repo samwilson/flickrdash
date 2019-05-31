@@ -326,22 +326,30 @@ class Commons
             }
             $titles = array_unique($allTitles);
 
-            // Get coordinates of this batch of titles.
-            $coordsParams = [
+            // Get coordinates and categories of this batch of titles.
+            $fileInfoParams = [
                 'action' => 'query',
                 'format' => 'json',
-                'prop' => 'coordinates',
+                'prop' => 'coordinates|categories',
                 'titles' => join('|', $titles),
                 'coprop' => 'type|name|dim|country|region',
                 'coprimary' => 'all',
             ];
-            $coordsResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, $coordsParams);
-            $coordsData = \GuzzleHttp\json_decode($coordsResult, true);
+            $fileInfoResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, $fileInfoParams);
+            $fileInfoData = \GuzzleHttp\json_decode($fileInfoResult, true);
 
             // See if there is a file without coordinates.
-            foreach ($coordsData['query']['pages'] as $coordInfo) {
-                if (empty($coordInfo['coordinates'])) {
-                    return $coordInfo['title'];
+            foreach ($fileInfoData['query']['pages'] as $fileInfo) {
+                if (empty($fileInfo['coordinates'])) {
+                    // Make sure it's not in the 'Location not applicable' category.
+                    if (isset($fileInfo['categories'])) {
+                        foreach ($fileInfo['categories'] as $category) {
+                            if ($category['title'] === 'Category:Location not applicable') {
+                                continue 2;
+                            }
+                        }
+                    }
+                    return $fileInfo['title'];
                 }
             }
         } while (isset($contribsData['continue']['uccontinue']));
