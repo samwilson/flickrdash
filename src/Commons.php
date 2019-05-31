@@ -340,15 +340,15 @@ class Commons
 
             // See if there is a file without coordinates.
             foreach ($fileInfoData['query']['pages'] as $fileInfo) {
-                if (empty($fileInfo['coordinates'])) {
-                    // Make sure it's not in the 'Location not applicable' category.
-                    if (isset($fileInfo['categories'])) {
-                        foreach ($fileInfo['categories'] as $category) {
-                            if ($category['title'] === 'Category:Location not applicable') {
-                                continue 2;
-                            }
+                // Make sure it's not in the 'Location not applicable' category.
+                if (isset($fileInfo['categories'])) {
+                    foreach ($fileInfo['categories'] as $category) {
+                        if ($category['title'] === 'Category:Location not applicable') {
+                            continue 2;
                         }
                     }
+                }
+                if (empty($fileInfo['coordinates'])) {
                     return $fileInfo['title'];
                 }
             }
