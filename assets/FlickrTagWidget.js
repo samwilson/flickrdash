@@ -52,7 +52,7 @@ FlickrTagWidget.prototype.onMenuChoose = function ( menuItem ) {
     FlickrTagWidget.parent.prototype.onMenuChoose.apply( this, arguments );
     var searchResult = menuItem.$element.data( 'tag-info' );
     if ( searchResult.itemid !== undefined ) {
-        this.addTag( 'wikidata=' + searchResult.itemid );
+        this.addTag( 'wikidata:id=' + searchResult.itemid );
         // See if this Wikidata item is linked to a Commons category.
         this.pushPending();
         $.ajax( {
