@@ -12,7 +12,7 @@
   "logout": "Log out",
   "flickr-login": "Connect to Flickr",
   "flickr-logout": "Disconnect from Flickr",
-  "logged-in-as": "Connected to Commons as $1",
+  "logged-in-as": "Connected to Commons as $1.",
 
   "flickr-dupes": "Flickr de-duplication",
   "flickr-find-duplicates": "Find duplicates",
