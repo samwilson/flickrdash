@@ -15,7 +15,7 @@
         </div>
     </section>
 
-    <form action="" method="post" class="edit-form">
+    <form action="" method="post" class="whitepage edit-form">
 
         <div class="two-cols">
             <section class="commons col form">
@@ -32,11 +32,11 @@
                 {{ commons_fieldset|raw }}
             </section>
             <section class="flickr col form">
-                <p>
-                    {{ msg('navigation') }}
-                    <a href="{{ path('flickr_geotodo') }}">{{ msg('geotodo') }}</a>
-                </p>
                 {% if flickr_file %}
+                    <p>
+                        {{ msg('navigation') }}
+                        <a href="{{ path('flickr_geotodo') }}">{{ msg('geotodo') }}</a>
+                    </p>
                     <h2>
                         <em>{{ msg('flickr') }}</em>
                         &middot; <a href="{{ flickr_file.shorturl }}" target="_blank" title="{{ msg('opens-in-new-tab') }}">{{ flickr_file.shorturl }}</a>

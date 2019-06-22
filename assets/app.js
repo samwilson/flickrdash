@@ -117,6 +117,21 @@ $(function () {
     });
 
     /**
+     * Commons category shortcut links.
+     */
+    var catLink = '[[Category:Location not applicable]]';
+    var $locationNotApplicable = $( '<a>' ).text( catLink );
+    var commonsPageTextWidget = OO.ui.infuse( $( '#commons-page-text-widget' ) );
+    var commonsCommentWidget = OO.ui.infuse( $( '#commons-comment-widget' ) );
+    commonsPageTextWidget.$element.after( $locationNotApplicable );
+    $locationNotApplicable.on( 'click', function () {
+        // Add category to the end of the page text.
+        commonsPageTextWidget.setValue( commonsPageTextWidget.getValue() + '\n' + catLink );
+        // Pre-load a change comment.
+        commonsCommentWidget.setValue( commonsCommentWidget.getValue() + ' ' + catLink );
+    } );
+
+    /**
      * Tags.
      */
     var $tagWidgetElement = $( ':input[name="flickr[tags]"]' ).parents( '.oo-ui-widget' );

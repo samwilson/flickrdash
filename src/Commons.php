@@ -308,7 +308,6 @@ class Commons
             'ucuser' => $this->currentUser,
             'ucnamespace' => 6,
             'ucprop' => 'title',
-            // 'uclimit' = 500,
         ];
         $contribsData = null;
         do {
@@ -332,6 +331,7 @@ class Commons
                 'format' => 'json',
                 'prop' => 'coordinates|categories',
                 'titles' => join('|', $titles),
+                'cllimit' => 500,
                 'coprop' => 'type|name|dim|country|region',
                 'coprimary' => 'all',
             ];
