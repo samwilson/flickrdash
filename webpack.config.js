@@ -29,8 +29,7 @@
 		// Remove deprecated options from css-loader.
 		// @TODO remove this after the options have been removed from Encore defaults.
 		.configureCssLoader( function ( options ) {
-			delete options.minimize;
-			delete options.sourceMap;
+			delete options.localIdentName;
 			return options;
 		} )
 

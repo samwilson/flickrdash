@@ -3,18 +3,18 @@
     "@symfony/webpack-encore": "0.27.0",
     "@wikimedia/jquery.i18n": "1.0",
     "copy-webpack-plugin": "5.0.3",
-    "css-loader": "2.1.1",
+    "css-loader": "3.0.0",
     "jquery": "3.4.1",
     "jquery.uls": "0.1",
     "leaflet": "1.5.1",
     "less": "3.9",
     "less-loader": "4.1.0",
-    "oojs-ui": "0.31.6",
+    "oojs-ui": "0.32.1",
     "popper.js": "1.15.0",
-    "wikimedia-ui-base": "0.13"
+    "wikimedia-ui-base": "0.14.0"
   },
   "devDependencies": {
-    "eslint": "5.13.0"
+    "eslint": "6.0.0"
   },
   "scripts": {
     "assets": "encore dev --watch"
