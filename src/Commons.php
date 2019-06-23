@@ -332,6 +332,7 @@ class Commons
                 'prop' => 'coordinates|categories',
                 'titles' => join('|', $titles),
                 'cllimit' => 500,
+                'colimit' => 500,
                 'coprop' => 'type|name|dim|country|region',
                 'coprimary' => 'all',
             ];
