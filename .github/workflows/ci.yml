@@ -6,15 +6,16 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v1
-    
+
     - name: Install
       run: |
+        cp .env.dist .env
         npm install
         composer install
-    
+
     - name: Test
       run: |
         composer test

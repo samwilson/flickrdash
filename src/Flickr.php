@@ -40,7 +40,7 @@ class Flickr
     /**
      * @return string
      */
-    public function getUserId()
+    public function getUserId(): string
     {
         return $this->userId;
     }

@@ -289,7 +289,10 @@ class Commons
         // @TODO support https://flic.kr/p/2dTyzrk URLs.
     }
 
-    public static function getLicenses()
+    /**
+     * @return mixed[][]
+     */
+    public static function getLicenses(): array
     {
         return [
             ['flickr_license_id' => 5, 'commons_template' => 'cc-by-sa-2.0'],
@@ -299,6 +302,9 @@ class Commons
         ];
     }
 
+    /**
+     * @return string|bool File title or false if none found.
+     */
     public function getNextNonGeolocated()
     {
         $params = [
@@ -336,7 +342,12 @@ class Commons
                 'coprop' => 'type|name|dim|country|region',
                 'coprimary' => 'all',
             ];
-            $fileInfoResult = $this->oauthClient->makeOAuthCall($this->accessToken, $this->apiUrl, true, $fileInfoParams);
+            $fileInfoResult = $this->oauthClient->makeOAuthCall(
+                $this->accessToken,
+                $this->apiUrl,
+                true,
+                $fileInfoParams
+            );
             $fileInfoData = \GuzzleHttp\json_decode($fileInfoResult, true);
 
             // See if there is a file without coordinates.
@@ -344,7 +355,7 @@ class Commons
                 // Make sure it's not in the 'Location not applicable' category.
                 if (isset($fileInfo['categories'])) {
                     foreach ($fileInfo['categories'] as $category) {
-                        if ($category['title'] === 'Category:Location not applicable') {
+                        if ('Category:Location not applicable' === $category['title']) {
                             continue 2;
                         }
                     }
