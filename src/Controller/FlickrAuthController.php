@@ -7,6 +7,7 @@ use OAuth\Common\Storage\Session;
 use Samwilson\PhpFlickr\PhpFlickr;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -14,12 +15,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class FlickrAuthController extends AbstractController
 {
 
-    const SESSION_KEY = 'flickr_access_token';
+    public const SESSION_KEY = 'flickr_access_token';
 
     /**
      * @Route("/flickr/login", name="flickr_login")
      */
-    public function login(PhpFlickr $flickr)
+    public function login(PhpFlickr $flickr): Response
     {
         $storage = new Session();
         $flickr->setOauthStorage($storage);
@@ -31,7 +32,7 @@ class FlickrAuthController extends AbstractController
     /**
      * @Route("/flickr/oauth_callback", name="flickr_login_callback")
      */
-    public function callback(Request $request, PhpFlickr $flickr, SymfonySession $session)
+    public function callback(Request $request, PhpFlickr $flickr, SymfonySession $session): Response
     {
         $storage = new Session();
         $flickr->setOauthStorage($storage);
@@ -45,7 +46,7 @@ class FlickrAuthController extends AbstractController
     /**
      * @Route("/flickr/logout", name="flickr_logout")
      */
-    public function logout(SymfonySession $session)
+    public function logout(SymfonySession $session): Response
     {
         $session->remove(static::SESSION_KEY);
         return $this->redirectToRoute('home');

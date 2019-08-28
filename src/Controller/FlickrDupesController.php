@@ -9,6 +9,7 @@ use Samwilson\PhpFlickr\PhpFlickr;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,19 +32,11 @@ class FlickrDupesController extends AbstractController
     /**
      * @Route("/flickr/dupes", name="flickr_dupes")
      */
-    public function main(PhpFlickr $flickr, Session $session, Intuition $intuition)
+    public function main(PhpFlickr $flickr, Session $session, Intuition $intuition): Response
     {
-//        $searchButton = new ButtonWidget([
-//            'label' => $intuition->msg('find-duplicates'),
-//            'infusable' => true,
-//            'id' => 'flickr-dupes-search-button',
-//        ]);
-//        $progressBar = new ProgressBarWidget(['infusable' => true]);
         return $this->render('flickr_dupes.html.twig', [
             'page_name' => 'flickr_dupes',
             'flickr_logged_in' => (bool)$this->flickrAccess($flickr, $session),
-//            'progress_bar' => $progressBar,
-//            'search_button' => $searchButton,
         ]);
     }
 
@@ -51,7 +44,7 @@ class FlickrDupesController extends AbstractController
      * Get basic info about all photos.
      * @Route("/flickr/dupes/info", name="flickr_dupes_info")
      */
-    public function info(PhpFlickr $flickr, Session $session)
+    public function info(PhpFlickr $flickr, Session $session): Response
     {
         $this->flickrAccess($flickr, $session);
         $info = $flickr->people()->getPhotos();
@@ -64,7 +57,7 @@ class FlickrDupesController extends AbstractController
     /**
      * @Route("/flickr/dupes/info/{pageNum}", name="flickr_dupes_page")
      */
-    public function next(PhpFlickr $flickr, Session $session, $pageNum)
+    public function next(PhpFlickr $flickr, Session $session, string $pageNum): Response
     {
         $this->flickrAccess($flickr, $session);
         $photos = $flickr->people()->getPhotos(
@@ -104,7 +97,7 @@ class FlickrDupesController extends AbstractController
     /**
      * @param PhpFlickr $flickr
      * @param string[][] $photo
-     * @return array
+     * @return mixed[]
      */
     protected function processPhoto(PhpFlickr $flickr, array $photo): array
     {
@@ -115,17 +108,11 @@ class FlickrDupesController extends AbstractController
             if ('checksum:' !== substr($tag, 0, strlen('checksum:'))) {
                 continue;
             }
-            // If we've got a checksum tag, query for others wit hthe same one.
-            $tagParts = explode('=', $tag);
-            $tagSearchString = $tagParts[0].'="'.$tagParts[1].'"';
+            // If we've got a checksum tag, query for others with the same one.
             $search = $flickr->photos()->search(['user_id' => 'me', 'machine_tags' => $tag]);
-            //dd($photo, $tag, $tagParts, $tagSearchString, $search);
-            // https://www.flickr.com/photos/tags/checksum:sha1=31ae163e2fb5cd0798d4edc8f9259132f956eb25 works
-            // https://www.flickr.com/photos/tags/checksum:sha1=31ae163e2fb5cd0798d4edc8f9259132f956eb25
             if ((int)$search['total'] < 2) {
                 continue;
             }
-            dd($search);
             $prev = null;
             foreach ($search['photo'] as $searchResult) {
                 $photoInfo = $flickr->photos()->getInfo($searchResult['id']);
@@ -147,10 +134,10 @@ class FlickrDupesController extends AbstractController
      *     requirements={"id1"="\d+", "id2"="\d+"}
      *     )
      */
-    public function compare(Flickr $flickr, Session $session, $id1, $id2)
+    public function compare(Flickr $flickr, Session $session, string $id1, string $id2): Response
     {
         $photos = [];
-        foreach ([1 => $id1, 2 => $id2] as $idx => $id) {
+        foreach ([1 => $id1, 2 => $id2] as $id) {
             $photos[] = $flickr->getInfo((int)$id, true);
         }
         return $this->render('flickr_compare.html.twig', [
@@ -167,7 +154,7 @@ class FlickrDupesController extends AbstractController
      *     methods="POST"
      *     )
      */
-    public function delete(Flickr $flickr): void
+    public function delete(Flickr $flickr): Response
     {
     }
 }

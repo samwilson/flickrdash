@@ -21,6 +21,7 @@ use Samwilson\PhpFlickr\FlickrException;
 use Samwilson\PhpFlickr\Util;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,7 +31,7 @@ class MainController extends ControllerBase
     /**
      * @Route("/", name="home")
      */
-    public function home(Session $session, Commons $commons, Flickr $flickr)
+    public function home(Session $session, Commons $commons, Flickr $flickr): Response
     {
         $flickrLoggedIn = false !== $flickr->getUserId();
         $recentFlickrFiles = [];
@@ -61,10 +62,20 @@ class MainController extends ControllerBase
     /**
      * @Route("edit/{commonsTitle}", name="editCommons", requirements={"commonsTitle"="File:.*"}, methods={"GET"})
      * @Route("edit/{flickrId}", name="editFlickr", requirements={"flickrId"="\d+"}, methods={"GET"})
-     * @Route("edit/{flickrId}/{commonsTitle}", name="editBoth", requirements={"commonsTitle"="File:.*", "flickrId"="\d+"}, methods={"GET"})
+     * @Route(
+     *     "edit/{flickrId}/{commonsTitle}",
+     *     name="editBoth",
+     *     requirements={"commonsTitle"="File:.*", "flickrId"="\d+"},
+     *     methods={"GET"}
+     *     )
      */
-    public function edit(Commons $commons, Session $session, Flickr $flickr, $commonsTitle = '', $flickrId = '')
-    {
+    public function edit(
+        Commons $commons,
+        Session $session,
+        Flickr $flickr,
+        string $commonsTitle = '',
+        string $flickrId = ''
+    ): Response {
         $alerts = [];
         if (!empty($commonsTitle) && empty($flickrId)) {
             $extractedFlickrId = $commons->getFlickrId($commonsTitle);
@@ -224,7 +235,10 @@ class MainController extends ControllerBase
         $licenses = $commons->getLicenses();
         $licenseOptions = [['data' => '']];
         foreach ($licenses as $license) {
-            $licenseOptions[] = ['data' => $license['flickr_license_id'], 'label' => $this->msg('license-'.$license['commons_template'])];
+            $licenseOptions[] = [
+                'data' => $license['flickr_license_id'],
+                'label' => $this->msg('license-'.$license['commons_template']),
+            ];
         }
         $flickrLicenseWidget = new DropdownInputWidget([
             'options' => $licenseOptions,
@@ -345,16 +359,21 @@ class MainController extends ControllerBase
     /**
      * @Route("edit/{commonsTitle}", name="saveCommons", requirements={"commonsTitle"="File:.*"}, methods={"POST"})
      * @Route("edit/{flickrId}", name="saveFlickr", requirements={"flickrId"="\d+"}, methods={"POST"})
-     * @Route("edit/{flickrId}/{commonsTitle}", name="saveBoth", requirements={"commonsTitle"="File:.*", "flickrId"="\d+"}, methods={"POST"})
+     * @Route(
+     *     "edit/{flickrId}/{commonsTitle}",
+     *     name="saveBoth",
+     *     requirements={"commonsTitle"="File:.*", "flickrId"="\d+"},
+     *     methods={"POST"}
+     *     )
      */
     public function save(
         Request $request,
         Commons $commons,
         Flickr $flickr,
         Session $session,
-        $commonsTitle = '',
-        $flickrId = ''
-    ) {
+        string $commonsTitle = '',
+        string $flickrId = ''
+    ): Response {
         $requestParams = $request->request->all();
 
         $commonsLoggedIn = $session->has('logged_in_user');
@@ -370,8 +389,9 @@ class MainController extends ControllerBase
             $commonsTitle = 'File:'.$uploaded['filename'];
             // Add link from Flickr to Commons.
             if (isset($requestParams['flickr']['description'])) {
+                $url = 'https://commons.wikimedia.org/wiki/File:'.urlencode($uploaded['filename']);
                 $requestParams['flickr']['description'] .= "\n\n"
-                    ."<a href='https://commons.wikimedia.org/wiki/File:".urlencode($uploaded['filename'])."' rel='noreferrer nofollow'>"
+                    ."<a href='".$url."' rel='noreferrer nofollow'>"
                     .$uploaded['filename']
                     ."</a>";
             }
@@ -414,7 +434,7 @@ class MainController extends ControllerBase
     /**
      * @Route("/tags", name="tags")
      */
-    public function tagSearch(Request $request, Flickr $flickr)
+    public function tagSearch(Request $request, Flickr $flickr): Response
     {
         $resultCount = 10;
         $searchTerm = $request->get('q');

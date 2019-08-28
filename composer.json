@@ -14,7 +14,7 @@
         "ext-mbstring": "*",
         "addwiki/mediawiki-api-base": "^2.4",
         "guzzlehttp/guzzle": "^6.3",
-        "oojs/oojs-ui": "^0.31",
+        "oojs/oojs-ui": "^0.33",
         "samwilson/phpflickr": "^4.8",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "^4.1",
@@ -63,9 +63,7 @@
             "./bin/console lint:yaml ./config",
             "./vendor/bin/phpcs -s .",
             "./vendor/bin/minus-x check .",
-            "./node_modules/.bin/lessc --lint assets/*.less",
-            "./node_modules/.bin/eslint .",
-            "./bin/phpunit tests"
+            "./node_modules/.bin/lessc --lint assets/*.less"
         ]
     }
 }
