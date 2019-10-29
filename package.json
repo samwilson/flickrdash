@@ -9,7 +9,7 @@
     "leaflet": "1.5.1",
     "less": "3.9",
     "less-loader": "4.1.0",
-    "oojs-ui": "^0.33",
+    "oojs-ui": "^0.35",
     "popper.js": "1.15.0",
     "wikimedia-ui-base": "0.14.0"
   }
