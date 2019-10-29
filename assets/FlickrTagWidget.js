@@ -75,8 +75,11 @@ FlickrTagWidget.prototype.commonsCategoryCallback = function ( data ) {
         commonsPageTextWidget = OO.ui.infuse( $( '#commons-page-text-widget' ) );
         newPageText = commonsPageTextWidget.getValue() + "\n[[Category:" + commonsCatName + "]]";
         commonsPageTextWidget.setValue( newPageText );
-        commonsCommentWidget = OO.ui.infuse( $( '#commons-comment-widget' ) );
-        commonsCommentWidget.setValue( commonsCommentWidget.getValue() + " Categorize." );
+        $commonsCommentWidget = $( '#commons-comment-widget' );
+        if ( $commonsCommentWidget.length > 0 ) {
+            commonsCommentWidget = OO.ui.infuse( $commonsCommentWidget );
+            commonsCommentWidget.setValue( commonsCommentWidget.getValue() + " Categorize." );
+        }
     }
     this.popPending();
 };
