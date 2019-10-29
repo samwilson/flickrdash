@@ -9,7 +9,7 @@ on [Wikimedia Commons](https://commons.wikimedia.org/).
 * Issue tracker: https://phabricator.wikimedia.org/tag/tool-flickrdash/
 * Source code: https://github.com/samwilson/flickrdash
 
-[![Build Status](https://travis-ci.org/samwilson/flickrdash.svg)](https://travis-ci.org/samwilson/flickrdash)
+[![Build Status](https://github.com/samwilson/flickrdash/workflows/CI/badge.svg)](https://github.com/samwilson/flickrdash/actions?workflow=CI)
 
 ## Installation
 
@@ -20,7 +20,7 @@ Required permissions for the Commons OAuth consumer:
 * Upload new files
 * Upload, replace, and move files
 
-## License
+## License (GPL-3.0-or-later)
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
