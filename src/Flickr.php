@@ -20,7 +20,7 @@ class Flickr
     protected $sessionKey = 'phpflickr-oauth-access-token';
 
     /** @var mixed[] */
-    protected $info;
+    protected $info = [];
 
     /** @var string */
     protected $userId;
@@ -52,8 +52,8 @@ class Flickr
      */
     public function getInfo(int $id, ?bool $extended = false): array
     {
-        if ($this->info) {
-            return $this->info;
+        if (isset($this->info[$id])) {
+            return $this->info[$id];
         }
         $photoInfo = $this->flickr->photos()->getInfo($id);
         $photoInfo['shorturl'] = $this->flickr->urls()->getShortUrl($id);
@@ -80,8 +80,8 @@ class Flickr
             }
         }
         $photoInfo['ismine'] = $this->userId === $photoInfo['owner']['nsid'];
-        $this->info = $photoInfo;
-        return $this->info;
+        $this->info[$id] = $photoInfo;
+        return $this->info[$id];
     }
 
     /**

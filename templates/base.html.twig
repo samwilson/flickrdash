@@ -15,6 +15,7 @@
             {% if logged_in_user() or flickr_logged_in %}
                 <a href="{{ path('toolforge_logout') }}">{{ msg('logout') }}</a>
             {% endif %}
+            <a href="{{ path('flickr_dupes') }}">{{ msg('flickr-dupes') }}</a>
         </p>
     </header>
 

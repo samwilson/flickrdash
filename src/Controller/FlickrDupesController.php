@@ -5,15 +5,18 @@ namespace App\Controller;
 
 use App\Flickr;
 use Krinkle\Intuition\Intuition;
+use OOUI\ButtonInputWidget;
+use OOUI\FieldLayout;
+use OOUI\TextInputWidget;
 use Samwilson\PhpFlickr\PhpFlickr;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FlickrDupesController extends AbstractController
+class FlickrDupesController extends ControllerBase
 {
 
     /**
@@ -32,11 +35,36 @@ class FlickrDupesController extends AbstractController
     /**
      * @Route("/flickr/dupes", name="flickr_dupes")
      */
-    public function main(PhpFlickr $flickr, Session $session, Intuition $intuition): Response
+    public function main(Request $request, PhpFlickr $flickr, Session $session, Intuition $intuition): Response
     {
+        $paramsForRedirect = [];
+        if ($request->get('id1')) {
+            $paramsForRedirect['id1'] = $request->get('id1');
+        }
+        if ($request->get('id2')) {
+            $paramsForRedirect['id2'] = $request->get('id2');
+        }
+        if (2 === count($paramsForRedirect)) {
+            return $this->redirectToRoute('flickr_dupes_compare', $paramsForRedirect);
+        }
+
+        $photo1Field = new FieldLayout(
+            new TextInputWidget(['name' => 'id1']),
+            ['label' => $this->msg('flickr-dupes-photo1')]
+        );
+        $photo2Field = new FieldLayout(
+            new TextInputWidget(['name' => 'id2']),
+            ['label' => $this->msg('flickr-dupes-photo2')]
+        );
         return $this->render('flickr_dupes.html.twig', [
             'page_name' => 'flickr_dupes',
             'flickr_logged_in' => (bool)$this->flickrAccess($flickr, $session),
+            'photo1' => $photo1Field,
+            'photo2' => $photo2Field,
+            'dupeSearchButton' => new ButtonInputWidget([
+                'label' => $this->msg('flickr-dupes-compare-button'),
+                'type' => 'submit',
+            ]),
         ]);
     }
 
@@ -138,7 +166,7 @@ class FlickrDupesController extends AbstractController
     {
         $photos = [];
         foreach ([1 => $id1, 2 => $id2] as $id) {
-            $photos[] = $flickr->getInfo((int)$id, true);
+            $photos[$id] = $flickr->getInfo((int)$id, true);
         }
         return $this->render('flickr_compare.html.twig', [
             'flickr_logged_in' => $session->has(FlickrAuthController::SESSION_KEY),
@@ -147,7 +175,7 @@ class FlickrDupesController extends AbstractController
     }
 
     /**
-     * Compare two FLickr photos and provide the means of deleting one.
+     * Delete the given Flickr photo.
      * @Route(
      *     "/flickr/dupes/delete",
      *     name="flickr_dupes_delete",
