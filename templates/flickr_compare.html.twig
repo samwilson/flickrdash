@@ -2,11 +2,11 @@
 
 {% block main %}
 
-<form class="two-cols" method="post" action="{{ path('flickr_dupe_delete') }}">
+<form class="two-cols" method="post" action="{{ path('flickr_dupes_delete') }}">
     {% for photo in photos %}
         <section class="col">
             <p><img src="{{ photo.sizes.Medium.source }}" width="{{ photo.sizes.Medium.width }}" height="{{ photo.sizes.Medium.height }}" /></p>
-            <table class="vertical-headers">
+            <table class="vertical-headers whitepage">
                 <tr>
                     <th>{{ msg('flickr-id') }}</th>
                     <td><a href="{{ photo.urls.url.0._content }}" target="_blank" title="{{ msg('opens-in-new-tab') }}">{{ photo.id }}</a></td>

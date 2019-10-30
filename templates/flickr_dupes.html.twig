@@ -2,8 +2,19 @@
 
 {% block main %}
 
-    <div id="flickr-dupes" data-info-url="{{ path('flickr_dupes_info') }}" class="whitepage">
-        <h2>{{ msg('flickr-find-duplicates') }}</h2>
+    <div id="flickr-dupes" class="whitepage">
+
+        <h2>{{ msg('flickr-compare-photos') }}</h2>
+        <form action="{{ path('flickr_dupes') }}" method="get">
+            {{ photo1|raw }}
+            {{ photo2|raw }}
+            <p>{{ dupeSearchButton|raw }}</p>
+        </form>
+
+        <div data-info-url="{{ path('flickr_dupes_info') }}">
+            <h2>{{ msg('flickr-find-duplicates') }}</h2>
+        </div>
+
     </div>
 
 {% endblock %}
