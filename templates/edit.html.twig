@@ -45,6 +45,10 @@
                         <p><em>{{ msg('not-your-file') }}</em></p>
                     {% endif %}
                     {{ flickr_fieldset|raw }}
+                    <p>
+                        <strong>{{ msg('flickr-camera') }}</strong>
+                        {% if flickr_file.camera %}{{ flickr_file.camera }}{% else %}{{ msg('flickr-camera-unknown') }}{% endif %}
+                    </p>
                 {% endif %}
             </section>
         </div>

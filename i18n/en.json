@@ -58,6 +58,8 @@
   "flickr-location-accuracy-region": "Region",
   "flickr-location-accuracy-country": "Country",
   "flickr-location-accuracy-world": "World",
+  "flickr-camera": "Camera:",
+  "flickr-camera-unknown": "Unknown",
   "flickr-perms-public": "Public",
   "flickr-perms-friend": "Friends",
   "flickr-perms-family": "Family",
