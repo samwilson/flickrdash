@@ -56,6 +56,8 @@ class Flickr
             return $this->info[$id];
         }
         $photoInfo = $this->flickr->photos()->getInfo($id);
+        $exif = $this->flickr->photos_getExif($id);
+        $photoInfo['camera'] = $exif['camera'] ?? false;
         $photoInfo['shorturl'] = $this->flickr->urls()->getShortUrl($id);
         $photoInfo['img_src'] = $this->flickr->urls()->getImageUrl($photoInfo, PhotosApi::SIZE_MEDIUM_800);
         $photoInfo['original_url'] = $this->flickr->urls()->getImageUrl($photoInfo, PhotosApi::SIZE_ORIGINAL);
