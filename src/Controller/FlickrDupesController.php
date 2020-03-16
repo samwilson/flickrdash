@@ -8,10 +8,12 @@ use Krinkle\Intuition\Intuition;
 use OOUI\ButtonInputWidget;
 use OOUI\FieldLayout;
 use OOUI\TextInputWidget;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class FlickrDupesController extends ControllerBase
 {
@@ -70,13 +72,18 @@ class FlickrDupesController extends ControllerBase
      * Find the next set of duplicates.
      * @Route("/flickr/dupes/find", name="flickr_dupes_find")
      */
-    public function find(Flickr $flickr, Session $session): Response
+    public function find(Flickr $flickr): Response
     {
         if (!$flickr->getUserId()) {
             return $this->redirectToRoute('flickr_dupes');
         }
         // This gets *all* tags, which might sound inefficient but there doesn't seem to be a way to page through them.
-        $tags = $flickr->getFlickr()->tags_getListUser();
+        $cache = new FilesystemAdapter('app.cache');
+        $tags = $cache->get('flickr-tags', function (ItemInterface $item) use ($flickr) {
+            $item->expiresAfter(60 * 30);
+            return $flickr->getFlickr()->tags_getListUser();
+        });
+
         foreach ($tags as $tag) {
             // Ignore non-checksum tags.
             if ('checksum:' !== substr($tag, 0, strlen('checksum:'))) {
