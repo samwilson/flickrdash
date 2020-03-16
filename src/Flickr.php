@@ -37,6 +37,11 @@ class Flickr
         $this->flickr = $phpFlickr;
     }
 
+    public function getFlickr(): PhpFlickr
+    {
+        return $this->flickr;
+    }
+
     /**
      * @return string
      */
@@ -191,10 +196,5 @@ class Flickr
             $page++;
         } while ($res['page'] <= $res['total']);
         return false;
-    }
-
-    public function delete(int $photoId): void
-    {
-        $this->flickr->photos_delete($photoId);
     }
 }

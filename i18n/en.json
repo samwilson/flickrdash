@@ -14,6 +14,7 @@
   "flickr-logout": "Disconnect from Flickr",
   "logged-in-as": "Connected to Commons as $1.",
 
+  "flickr-not-logged-in": "You must connect to Flickr before using this feature.",
   "flickr-header-label": "Flickr:",
   "flickr-dupes": "Flickr de-duplication",
   "flickr-find-duplicates": "Find duplicates",
