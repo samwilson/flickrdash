@@ -25,7 +25,7 @@ class FlickrAuthController extends AbstractController
         $storage = new Session();
         $flickr->setOauthStorage($storage);
         $callbackUrl = $this->generateUrl('flickr_login_callback', [], UrlGeneratorInterface::ABSOLUTE_URL);
-        $authUrl = $flickr->getAuthUrl('write', $callbackUrl);
+        $authUrl = $flickr->getAuthUrl('delete', $callbackUrl);
         return $this->redirect($authUrl->getAbsoluteUri());
     }
 

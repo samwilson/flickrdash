@@ -33,7 +33,7 @@ class MainController extends ControllerBase
      */
     public function home(Session $session, Commons $commons, Flickr $flickr): Response
     {
-        $flickrLoggedIn = false !== $flickr->getUserId();
+        $flickrLoggedIn = '' !== $flickr->getUserId();
         $recentFlickrFiles = [];
         if ($flickrLoggedIn) {
             $recentFlickrFiles = $flickr->getRecentUploads();

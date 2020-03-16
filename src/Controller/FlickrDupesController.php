@@ -10,7 +10,6 @@ use OOUI\FieldLayout;
 use OOUI\TextInputWidget;
 use Samwilson\PhpFlickr\PhpFlickr;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -56,102 +55,48 @@ class FlickrDupesController extends ControllerBase
             new TextInputWidget(['name' => 'id2']),
             ['label' => $this->msg('flickr-dupes-photo2')]
         );
+
         return $this->render('flickr_dupes.html.twig', [
             'page_name' => 'flickr_dupes',
             'flickr_logged_in' => (bool)$this->flickrAccess($flickr, $session),
             'photo1' => $photo1Field,
             'photo2' => $photo2Field,
-            'dupeSearchButton' => new ButtonInputWidget([
+            'dupesCompareButton' => new ButtonInputWidget([
                 'label' => $this->msg('flickr-dupes-compare-button'),
+                'type' => 'submit',
+            ]),
+            'dupesFindButton' => new ButtonInputWidget([
+                'label' => $this->msg('flickr-dupes-find-button'),
                 'type' => 'submit',
             ]),
         ]);
     }
 
     /**
-     * Get basic info about all photos.
-     * @Route("/flickr/dupes/info", name="flickr_dupes_info")
+     * Find the next set of duplicates.
+     * @Route("/flickr/dupes/find", name="flickr_dupes_find")
      */
-    public function info(PhpFlickr $flickr, Session $session): Response
+    public function find(PhpFlickr $flickr, Session $session): Response
     {
         $this->flickrAccess($flickr, $session);
-        $info = $flickr->people()->getPhotos();
-        return new JsonResponse([
-            'pages' => (int)$info['pages'],
-            'total' => (int)$info['total'],
-        ]);
-    }
-
-    /**
-     * @Route("/flickr/dupes/info/{pageNum}", name="flickr_dupes_page")
-     */
-    public function next(PhpFlickr $flickr, Session $session, string $pageNum): Response
-    {
-        $this->flickrAccess($flickr, $session);
-        $photos = $flickr->people()->getPhotos(
-            'me',
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            'tags',
-            10,
-            $pageNum
-        );
-        if (0 === $photos['pages']) {
-            // @TODO Handle no photos.
-        }
-        foreach ($photos['photo'] as $photo) {
-            $dupes = $this->processPhoto($flickr, $photo);
-            if ($dupes) {
-                [$photo1, $photo2] = $dupes;
-                return new JsonResponse([
-                    'url' => true, // @TODO fix this.
-                    'photo1' => $photo1,
-                    'photo2' => $photo2,
-                ]);
-            }
-        }
-        return new JsonResponse([
-            'pages' => (int)$photos['pages'],
-            'page' => $pageNum,
-            //'total' => (int)$photos['total'],
-        ]);
-    }
-
-    /**
-     * @param PhpFlickr $flickr
-     * @param string[][] $photo
-     * @return mixed[]
-     */
-    protected function processPhoto(PhpFlickr $flickr, array $photo): array
-    {
-        $tags = explode(' ', $photo['tags']);
-        // Go through the plain tags and detect the ones we're interested by string comparison rather than by
-        // querying the actual photo metadata, to save ourselves an extra request.
+        // This gets *all* tags, which might sound inefficient but there doesn't seem to be a way to page through them.
+        $tags = $flickr->tags_getListUser();
         foreach ($tags as $tag) {
+            // Ignore non-checksum tags.
             if ('checksum:' !== substr($tag, 0, strlen('checksum:'))) {
                 continue;
             }
-            // If we've got a checksum tag, query for others with the same one.
-            $search = $flickr->photos()->search(['user_id' => 'me', 'machine_tags' => $tag]);
-            if ((int)$search['total'] < 2) {
-                continue;
-            }
-            $prev = null;
-            foreach ($search['photo'] as $searchResult) {
-                $photoInfo = $flickr->photos()->getInfo($searchResult['id']);
-                if (!$prev) {
-                    $prev = $photoInfo;
-                } else {
-                    return [$prev, $photoInfo];
-                }
+            // Find photos with this tag.
+            $search = $flickr->photos()->search(['tags' => $tag]);
+            // If there are multiple, return the IDs.
+            if ($search['total'] > 1) {
+                //dd($search['photo']);
+                return $this->redirectToRoute('flickr_dupes_compare', [
+                    'id1' => $search['photo'][0]['id'],
+                    'id2' => $search['photo'][1]['id'],
+                ]);
             }
         }
-        return [];
     }
 
     /**
@@ -167,7 +112,15 @@ class FlickrDupesController extends ControllerBase
         $photos = [];
         foreach ([1 => $id1, 2 => $id2] as $id) {
             $photos[$id] = $flickr->getInfo((int)$id, true);
+            $photos[$id]['deleteButton'] = new ButtonInputWidget([
+                'label' => $this->msg('flickr-dupes-delete-button'),
+                'value' => $id,
+                'name' => 'id',
+                'type' => 'submit',
+                'flags' => 'destructive',
+            ]);
         }
+
         return $this->render('flickr_compare.html.twig', [
             'flickr_logged_in' => $session->has(FlickrAuthController::SESSION_KEY),
             'photos' => $photos,
@@ -176,13 +129,12 @@ class FlickrDupesController extends ControllerBase
 
     /**
      * Delete the given Flickr photo.
-     * @Route(
-     *     "/flickr/dupes/delete",
-     *     name="flickr_dupes_delete",
-     *     methods="POST"
-     *     )
+     * @Route( "/flickr/dupes/delete", name="flickr_dupes_delete", methods="POST")
      */
-    public function delete(Flickr $flickr): Response
+    public function delete(Request $request, Flickr $flickr): Response
     {
+        $id = $request->get('id');
+        $flickr->delete($id);
+        return $this->redirectToRoute('flickr_dupes_find');
     }
 }
