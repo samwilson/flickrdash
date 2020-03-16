@@ -5,7 +5,7 @@
 <form class="two-cols" method="post" action="{{ path('flickr_dupes_delete') }}">
     {% for photo in photos %}
         <section class="col whitepage">
-            {% if photos.sizes.Medium is defined %}
+            {% if photo.sizes.Medium is defined %}
                 {% set img = photo.sizes.Medium %}
             {% else %}
                 {% set img = photo.sizes.Thumbnail %}
