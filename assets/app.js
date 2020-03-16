@@ -2,7 +2,6 @@
 global.OO = OO;
 
 global.App = {};
-require('./App.FlickrDupes');
 
 // Load i18n message files.
 $( function () {
@@ -119,20 +118,23 @@ $(function () {
     /**
      * Commons category shortcut links.
      */
-    var catLink = '[[Category:Location not applicable]]';
-    var $locationNotApplicable = $( '<a>' ).text( catLink );
-    var commonsPageTextWidget = OO.ui.infuse( $( '#commons-page-text-widget' ) );
-    commonsPageTextWidget.$element.after( $locationNotApplicable );
-    $locationNotApplicable.on( 'click', function () {
-        // Add category to the end of the page text.
-        commonsPageTextWidget.setValue( commonsPageTextWidget.getValue() + '\n' + catLink );
-        // Pre-load a change comment if that field is present.
-        var $commonsComment = $( '#commons-comment-widget' );
-        if ( $commonsComment.length === 1 ) {
-            var commonsCommentWidget = OO.ui.infuse( $commonsComment );
-            commonsCommentWidget.setValue( commonsCommentWidget.getValue() + ' ' + catLink );
-        }
-    } );
+    var $commonsPageTextWidget = $( '#commons-page-text-widget' );
+    if ( $commonsPageTextWidget.length === 1 ) {
+        var catLink = '[[Category:Location not applicable]]';
+        var $locationNotApplicable = $( '<a>' ).text( catLink );
+        var commonsPageTextWidget = OO.ui.infuse( $commonsPageTextWidget );
+        commonsPageTextWidget.$element.after( $locationNotApplicable );
+        $locationNotApplicable.on( 'click', function () {
+            // Add category to the end of the page text.
+            commonsPageTextWidget.setValue( commonsPageTextWidget.getValue() + '\n' + catLink );
+            // Pre-load a change comment if that field is present.
+            var $commonsComment = $( '#commons-comment-widget' );
+            if ( $commonsComment.length === 1 ) {
+                var commonsCommentWidget = OO.ui.infuse( $commonsComment );
+                commonsCommentWidget.setValue( commonsCommentWidget.getValue() + ' ' + catLink );
+            }
+        } );
+    }
 
     /**
      * Tags.

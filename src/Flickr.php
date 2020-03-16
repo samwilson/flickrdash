@@ -29,7 +29,7 @@ class Flickr
     {
         /** @var StdOAuth1Token $accessToken */
         $accessToken = $session->get(FlickrAuthController::SESSION_KEY);
-        $this->userId = false;
+        $this->userId = '';
         if ($accessToken) {
             $phpFlickr->getOauthTokenStorage()->storeAccessToken('Flickr', $accessToken);
             $this->userId = $accessToken->getExtraParams()['user_nsid'];
@@ -191,5 +191,10 @@ class Flickr
             $page++;
         } while ($res['page'] <= $res['total']);
         return false;
+    }
+
+    public function delete(int $photoId): void
+    {
+        $this->flickr->photos_delete($photoId);
     }
 }

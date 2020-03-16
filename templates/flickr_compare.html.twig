@@ -4,9 +4,14 @@
 
 <form class="two-cols" method="post" action="{{ path('flickr_dupes_delete') }}">
     {% for photo in photos %}
-        <section class="col">
-            <p><img src="{{ photo.sizes.Medium.source }}" width="{{ photo.sizes.Medium.width }}" height="{{ photo.sizes.Medium.height }}" /></p>
-            <table class="vertical-headers whitepage">
+        <section class="col whitepage">
+            {% if photos.sizes.Medium is defined %}
+                {% set img = photo.sizes.Medium %}
+            {% else %}
+                {% set img = photo.sizes.Thumbnail %}
+            {% endif %}
+            <p class="center"><img src="{{ img.source }}" width="{{ img.width }}" height="{{ img.height }}" /></p>
+            <table class="vertical-headers">
                 <tr>
                     <th>{{ msg('flickr-id') }}</th>
                     <td><a href="{{ photo.urls.url.0._content }}" target="_blank" title="{{ msg('opens-in-new-tab') }}">{{ photo.id }}</a></td>
@@ -52,6 +57,7 @@
                 </tr>
                 <tr><th>{{ msg('flickr-date-uploaded') }}</th><td>{{ photo.dateuploaded_formatted }}</td></tr>
             </table>
+            <p class="center">{{ photo.deleteButton|raw }}</p>
             {#{{ dump(photo) }}#}
         </section>
     {% endfor %}
