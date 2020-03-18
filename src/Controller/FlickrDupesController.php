@@ -140,6 +140,6 @@ class FlickrDupesController extends ControllerBase
     {
         $id = (int)$request->get('id');
         $flickr->getFlickr()->photos_delete($id);
-        return $this->redirectToRoute('flickr_dupes_find');
+        return $this->redirectToRoute('flickr_dupes');
     }
 }
